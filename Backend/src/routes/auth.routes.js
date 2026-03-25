@@ -37,4 +37,4 @@ authRouter.get('/logout' , logoutUser)
  * @access  private
  */
 
-authRouter.get("/get-me" ,authUser , getMeController)
+authRouter.get("/getme" ,authUser , getMeController)
