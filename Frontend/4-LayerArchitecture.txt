@@ -1,0 +1,201 @@
+
+MERN STACK 4 LAYER ARCHITECTURE
+(UI → HOOKS → API → STATE)
+
+This architecture is used in React/MERN applications to keep the code clean,
+scalable, and easy to maintain.
+
+--------------------------------------------------
+1. UI LAYER (Presentation Layer)
+--------------------------------------------------
+
+Purpose:
+The UI layer is responsible for rendering what the user sees.
+
+Responsibilities:
+- Display data
+- Handle user interaction (click, input, submit)
+- Call hooks when actions happen
+- No business logic should be written here
+
+Example Folder:
+
+src/
+  components/
+    LoginForm.jsx
+    CourseCard.jsx
+    Navbar.jsx
+
+Example UI Code:
+
+function Login() {
+  const { login } = useAuth()
+
+  return (
+    <button onClick={login}>Login</button>
+  )
+}
+
+Flow:
+User clicks button → UI calls hook function
+
+
+--------------------------------------------------
+2. HOOKS LAYER (Business Logic Layer)
+--------------------------------------------------
+
+Purpose:
+Hooks contain application logic and connect UI with APIs and state.
+
+Responsibilities:
+- Handle async logic
+- Call APIs
+- Process responses
+- Update state
+
+Example Folder:
+
+src/
+  hooks/
+    useAuth.js
+    useCourses.js
+
+Example Hook:
+
+import { loginApi } from "../api/authApi"
+import { useAuthStore } from "../store/authStore"
+
+export function useAuth() {
+  const setUser = useAuthStore((state) => state.setUser)
+
+  const login = async (data) => {
+    const res = await loginApi(data)
+    setUser(res.data.user)
+  }
+
+  return { login }
+}
+
+
+--------------------------------------------------
+3. API LAYER (Network Layer)
+--------------------------------------------------
+
+Purpose:
+Handles communication with the backend server.
+
+Responsibilities:
+- Send HTTP requests
+- Receive responses
+- Keep network logic separate from UI
+
+Example Folder:
+
+src/
+  api/
+    authApi.js
+    courseApi.js
+
+Example API File:
+
+import axios from "axios"
+
+export const loginApi = (data) => {
+  return axios.post("/api/auth/login", data)
+}
+
+
+--------------------------------------------------
+4. STATE LAYER (Global State Management)
+--------------------------------------------------
+
+Purpose:
+Stores shared application data.
+
+Responsibilities:
+- Store global data
+- Update data after API response
+- Provide data to UI components
+
+Common Tools:
+- React Context
+- Redux
+- Zustand
+
+Example Folder:
+
+src/
+  store/
+    authStore.js
+    courseStore.js
+
+Example Zustand Store:
+
+import { create } from "zustand"
+
+export const useAuthStore = create((set) => ({
+  user: null,
+  setUser: (user) => set({ user })
+}))
+
+
+--------------------------------------------------
+HOW THESE LAYERS INTERACT
+--------------------------------------------------
+
+Step 1
+User interacts with UI.
+
+Step 2
+UI calls a Hook.
+
+Step 3
+Hook calls the API layer.
+
+Step 4
+API sends request to backend (Node.js / Express / MongoDB).
+
+Step 5
+Server sends response.
+
+Step 6
+Hook updates global state.
+
+Step 7
+UI re-renders automatically with updated data.
+
+
+FLOW DIAGRAM
+
+User Action
+     ↓
+UI Layer (Components)
+     ↓
+Hooks Layer (Logic)
+     ↓
+API Layer (HTTP Requests)
+     ↓
+Backend Server (Node + Express + MongoDB)
+     ↓
+Response
+     ↓
+Hooks update State
+     ↓
+State Layer (Store)
+     ↓
+UI Re-render
+
+
+--------------------------------------------------
+PROJECT STRUCTURE EXAMPLE
+--------------------------------------------------
+
+src/
+  components/      → UI Layer
+  hooks/           → Business Logic
+  api/             → Network Requests
+  store/           → Global State
+  pages/
+  utils/
+  App.jsx
+  main.jsx
