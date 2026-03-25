@@ -4,6 +4,7 @@ import { DbConnect } from "./src/config/db.js";
 
 
 
+
 await DbConnect();
 
 app.get('/' , () => {
