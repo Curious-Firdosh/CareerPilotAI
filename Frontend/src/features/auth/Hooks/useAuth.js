@@ -3,9 +3,6 @@ import { AuthApi } from "../Services/auth.api"
 import { toast } from "sonner"
 
 
-
-
-
 export const useLogin = () => {
 
     const result = useMutation({

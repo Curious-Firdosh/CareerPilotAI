@@ -1,0 +1,249 @@
+// ── Variables & Theme ─────────────────────────────────────────────
+$bg-page: #0d1117;
+$bg-card: #161b22;
+$border-color: #30363d;
+$text-primary: #e6edf3;
+$text-muted: #7d8590;
+$accent: #ff2d78;
+$accent-glow: rgba(255, 45, 120, 0.3);
+$font-stack: 'Inter', system-ui, -apple-system, sans-serif;
+
+// ── Mixins ─────────────────────────────────────────────────────
+@mixin smooth-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.landing-header {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, $bg-page 0%, lighten($bg-page, 1%) 100%);
+  color: $text-primary;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: $font-stack;
+
+  // ── BACKGROUND DECORATION ──
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(to right, rgba(255, 45, 120, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 45, 120, 0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+  }
+
+  .glow-sphere {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.12;
+    z-index: 0;
+
+    &.top-right { 
+      top: -15%; 
+      right: -10%; 
+      background: $accent;
+      box-shadow: 0 0 80px rgba($accent, 0.2);
+    }
+    
+    &.bottom-left { 
+      bottom: -15%; 
+      left: -10%; 
+      background: rgba(169, 113, 247, 0.5);
+      box-shadow: 0 0 80px rgba(169, 113, 247, 0.15);
+    }
+  }
+
+  // ── NAVBAR ──
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba($border-color, 0.3);
+    background: rgba($bg-card, 0.3);
+
+    .logo {
+      font-weight: 900;
+      letter-spacing: 2px;
+      font-size: 1.2rem;
+      color: $text-primary;
+      
+      .highlight { 
+        color: $accent;
+        text-shadow: 0 0 12px $accent-glow;
+      }
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+
+      a {
+        text-decoration: none;
+        color: $text-muted;
+        font-size: 0.9rem;
+        @include smooth-transition;
+        
+        &:hover { 
+          color: $text-primary;
+          text-shadow: 0 0 8px rgba($accent, 0.3);
+        }
+      }
+
+      .login-btn {
+        background: transparent;
+        border: 1px solid rgba($accent, 0.3);
+        color: $text-primary;
+        padding: 0.6rem 1.8rem;
+        cursor: pointer;
+        @include smooth-transition;
+        border-radius: 6px;
+        font-weight: 600;
+        
+        &:hover { 
+          border-color: $accent;
+          background: rgba($accent, 0.1);
+          box-shadow: 0 0 12px rgba($accent, 0.15);
+        }
+      }
+    }
+  }
+
+  // ── HERO CONTENT ──
+  .hero-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 10%;
+    z-index: 1;
+
+    .status-badge {
+      background: rgba($accent, 0.1);
+      border: 1px solid rgba($accent, 0.3);
+      color: $accent;
+      padding: 0.5rem 1.2rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      @include smooth-transition;
+
+      &:hover {
+        background: rgba($accent, 0.15);
+        box-shadow: 0 0 16px rgba($accent, 0.2);
+      }
+
+      .dot {
+        width: 6px;
+        height: 6px;
+        background: $accent;
+        border-radius: 50%;
+        box-shadow: 0 0 10px $accent;
+      }
+    }
+
+    .main-heading {
+      font-size: clamp(3rem, 8vw, 5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+
+      .text-gradient {
+        background: linear-gradient(135deg, $text-primary 0%, $accent 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 2px 10px rgba($accent, 0.2));
+      }
+    }
+
+    .subtext {
+      max-width: 700px;
+      color: $text-muted;
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin-bottom: 3rem;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 4rem;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      .primary-btn {
+        background: linear-gradient(135deg, $accent 0%, #ff4d8f 100%);
+        color: white;
+        border: none;
+        padding: 1.2rem 2.5rem;
+        font-weight: 800;
+        font-size: 1rem;
+        cursor: pointer;
+        border-radius: 8px;
+        @include smooth-transition;
+        box-shadow: 0 8px 24px rgba($accent, 0.25);
+        
+        &:hover { 
+          transform: translateY(-3px);
+          box-shadow: 0 12px 32px rgba($accent, 0.35);
+        }
+
+        &:active {
+          transform: translateY(-1px);
+        }
+      }
+
+      .secondary-btn {
+        background: rgba($text-primary, 0.05);
+        color: $text-primary;
+        border: 1px solid rgba($accent, 0.3);
+        padding: 1.2rem 2.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: 8px;
+        @include smooth-transition;
+        
+        &:hover { 
+          background: rgba($accent, 0.1);
+          border-color: $accent;
+          box-shadow: 0 8px 20px rgba($accent, 0.15);
+        }
+      }
+    }
+
+    .trust-bar {
+      span { 
+        font-size: 0.7rem; 
+        color: $text-muted; 
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      
+      .company-logos {
+        display: flex;
+        gap: 3rem;
+        margin-top: 1rem;
+        opacity: 0.4;
+        font-weight: 900;
+        font-size: 0.8rem;
+        color: $text-muted;
+      }
+    }
+  }
+}

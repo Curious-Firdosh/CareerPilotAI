@@ -1,0 +1,599 @@
+@use "sass:color";
+
+// ── Variables & Palette ─────────────────────────────────────────────────────
+$bg-page:       #0d1117;
+$bg-card:       #161b22;
+$bg-panel:      #1c2230;
+$border-color:  #30363d;
+$text-primary:  #e6edf3;
+$text-muted:    #8b949e;
+$accent-pink:   #ff2d78; 
+$accent-purple: #8957e5; // Intention
+$accent-green:  #2ea043; // Model Answer / Exceptional Match
+$accent-yellow: #d29922; // Medium Gap / Emerging Match
+$accent-red:    #f85149; // Hard Gap / Low Match
+$accent-good:   #a371f7; // Good Match (Purple)
+
+$font-stack:    'Inter', system-ui, -apple-system, sans-serif;
+
+// ── Premium Mixins ──────────────────────────────────────────────────────
+@mixin premium-scroll {
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: #30363d;
+    border-radius: 10px;
+    &:hover { background: $accent-pink; box-shadow: 0 0 8px rgba($accent-pink, 0.3); }
+  }
+}
+
+@mixin glass-effect {
+  background: rgba($bg-card, 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@mixin smooth-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@mixin premium-shadow {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+// ── Layout ──────────────────────────────────────────────────────────────────
+.interview-page {
+  display: grid;
+  grid-template-columns: 260px 1fr 360px;
+  height: 100vh;
+  background-color: $bg-page;
+  color: $text-primary;
+  font-family: $font-stack;
+  overflow: hidden;
+  background: linear-gradient(135deg, $bg-page 0%, color.adjust($bg-page, $lightness: 2%) 100%);
+
+  @media (max-width: 1200px) { grid-template-columns: 80px 1fr 300px; }
+  @media (max-width: 900px) { display: flex; flex-direction: column; overflow-y: auto; }
+}
+
+// ── Left Sidebar (Navigation) ────────────────────────────────────────────────
+.sidebar-left {
+  height: 100vh; // <-- Added: Makes it 100% of the viewport height
+  box-sizing: border-box; // <-- Added: Ensures padding is included in the 100vh calculation
+
+  background: linear-gradient(180deg, rgba($bg-card, 0.8) 0%, rgba($bg-card, 0.6) 100%);
+  border-right: 1px solid rgba($border-color, 0.3);
+  padding: 2rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  @include premium-scroll;
+  backdrop-filter: blur(10px);
+
+  .section-label {
+    font-size: 1.20rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    background: rgba($accent-pink, 0.15);
+    color: $accent-pink;
+    -webkit-background-clip: text;
+  }
+
+  .generate-pdf-btn{
+    margin-top: auto; // This will now correctly push the button to the bottom of the 100vh container
+    background: linear-gradient(135deg, $accent-green 0%, color.adjust($accent-green, $lightness: -10%) 100%);
+    color: #fff;
+    border: none;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s;
+    
+    &:hover { transform: translateY(-2px); }
+  }
+
+  .nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: $text-muted;
+      cursor: pointer;
+      font-weight: 500;
+      @include smooth-transition;
+
+      &:hover { 
+        background: rgba(255, 255, 255, 0.08); 
+        color: $text-primary;
+        transform: translateX(4px);
+      }
+      
+      &.active {
+        background: rgba($accent-pink, 0.15);
+        color: $accent-pink;
+        box-shadow: inset 3px 0 0 $accent-pink;
+        border: 1px solid rgba($accent-pink, 0.2);
+      }
+    }
+  }
+}
+
+.main-content {
+  flex: 1;
+  height: 100vh; // <-- Added to ensure the scroll area knows its bounds
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding: 2rem 3rem;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem; // <-- Added: This safely forces 3rem of space between the header and the question list
+
+  background: linear-gradient(180deg, rgba($bg-page, 0.7) 0%, rgba($bg-panel, 0.3) 100%);
+  @include premium-scroll;
+
+  // Syncing with your JSX class name
+  .content-header {
+    width: 100%;
+    max-width: 1000px;
+    min-height: 80px; // <-- Added: Fixes the minimum height of the title block
+    box-sizing: border-box;
+    
+    // Note: Removed the duplicate margin-bottoms. The 'gap: 3rem' on the parent handles this now perfectly.
+    
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    position: sticky;
+    top: 0; // Stays stuck to the top of .main-content's padding
+    z-index: 10;
+    
+    @include glass-effect;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    @include premium-shadow;
+
+    .heading { 
+      font-size: 2.2rem; 
+      font-weight: 800; 
+      margin: 0; 
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, $accent-pink 0%, #ff6bb3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 12px rgba($accent-pink, 0.25));
+    }
+
+    .badge {
+      background: rgba($text-muted, 0.1);
+      color: $text-muted;
+      font-size: 0.7rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      border: 1px solid rgba($text-muted, 0.2);
+      height: fit-content;
+      @include smooth-transition;
+      
+      &:hover {
+        background: rgba($text-muted, 0.15);
+        border-color: rgba($text-muted, 0.3);
+      }
+    }
+  }
+
+  .question-list, .road-map-container {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; // <-- Added: Gives nice spacing between individual question cards
+  }
+}
+// ── Palette & Layout Variables ──────────────────────────────────────────────
+$bg-card:       #161b22;
+$border-color:  #30363d;
+$text-primary:  #e6edf3;
+$text-muted:    #8b949e;
+$accent-pink:   #ff2d78; 
+$accent-purple: #8957e5; 
+$accent-green:  #2ea043;
+
+// Keeps the text aligned with the start of the question text above
+$left-indent: 70px; 
+
+.question-card {
+  background: linear-gradient(135deg, rgba($bg-card, 0.8) 0%, rgba($bg-card, 0.6) 100%);
+  border: 1px solid rgba($border-color, 0.3);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  @include smooth-transition;
+  @include premium-shadow;
+  backdrop-filter: blur(8px);
+
+  &:hover {
+    border-color: rgba($accent-pink, 0.2);
+    box-shadow: 0 20px 40px -10px rgba($accent-pink, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .q-header {
+    width: 100%;
+    padding: 1.25rem;
+    display: flex;
+    justify-items: start;
+    gap:20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    @include smooth-transition;
+
+    &:hover {
+      background: rgba(255, 45, 120, 0.05);
+    }
+
+    .q-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      height: fit-content;
+      align-self: flex-start;
+      white-space: nowrap;
+      background: rgba($accent-pink, 0.15);
+      color: $accent-pink;
+      font-weight: 800;
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      border-radius: 100px;
+      border: 1px solid rgba($accent-pink, 0.3);
+      @include smooth-transition;
+
+      &:hover {
+        background: rgba($accent-pink, 0.25);
+        box-shadow: 0 0 12px rgba($accent-pink, 0.2);
+      }
+    }
+
+    .q-text {
+      font-weight: 600;
+      color: $text-primary;
+      font-size: 1rem;
+      line-height: 1.5;
+      @include smooth-transition;
+    }
+
+    .chevron {
+      margin-left: auto;
+      color: $text-muted;
+      @include smooth-transition;
+
+      &.active {
+        transform: rotate(180deg);
+        color: $accent-pink;
+      }
+    }
+  }
+
+  // ── Body Refinement (Fixing the centering issue) ──────────────────────────
+  .q-body {
+    padding-bottom: 2rem;
+    border-top: 1px solid rgba($border-color, 0.2);
+    display: grid;
+    padding: 0 0 20px 1rem;
+    animation: slideDown 0.3s ease-out;
+    
+    .content-column {
+      grid-column: 2; 
+      display: flex;
+      flex-direction: column;
+      gap: 2rem; 
+      margin-top: 1.5rem;
+
+      .ans-block {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        @include smooth-transition;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.3);
+        }
+
+        .label-tag {
+          font-size: 0.65rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          padding: 6px 12px;
+          border-radius: 4px;
+          letter-spacing: 1px;
+          margin-bottom: 10px;
+          border: 1px solid transparent;
+
+          &.intention { 
+            background: rgba($accent-purple, 0.15); 
+            color: #a371f7;
+            border-color: rgba($accent-purple, 0.2);
+          }
+          
+          &.model     { 
+            background: rgba($accent-green, 0.15); 
+            color: #3fb950;
+            border-color: rgba($accent-green, 0.2);
+          }
+        }
+
+        p {
+          color: $text-muted;
+          font-size: 0.95rem;
+          line-height: 1.7;
+          margin: 0;
+          text-align: left;
+          width: 100%;
+          @include smooth-transition;
+        }
+      }
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+// ── Roadmap Vertical Road ───────────────────────────────────────────────────
+.road-map-container {
+  position: relative;
+  padding-left: 4rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, $accent-pink, transparent);
+  }
+
+  .road-step {
+    position: relative;
+    margin-bottom: 2.5rem;
+
+    .dot {
+      position: absolute;
+      left: -53px;
+      top: 5px;
+      width: 22px;
+      height: 22px;
+      background: $bg-page;
+      border: 4px solid $accent-pink;
+      border-radius: 50%;
+      z-index: 2;
+    }
+
+    .step-card {
+      background: $bg-card;
+      border: 1px solid $border-color;
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      h3 { margin: 0 0 1rem 0; color: $accent-pink; font-size: 1rem; }
+      ul { padding-left: 1.2rem; li { color: $text-muted; margin-bottom: 8px; font-size: 0.9rem; } }
+    }
+  }
+}
+
+// ── Right Sidebar & Widgets ──────────────────────────────────────────────────
+.sidebar-right {
+  background-color: $bg-card;
+  border-left: 1px solid $border-color;
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+
+  .widget {
+    .section-label{
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: $text-muted;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      
+      
+    }
+    .match-score-widget {
+      text-align: center;
+      margin-top: 1rem;
+      .circle {
+        width: 120px; height: 120px;
+        border: 8px solid transparent;
+        border-radius: 50%;
+        margin: 0 auto 1.5rem;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2rem; font-weight: 900;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+      }
+      &.exceptional, &.strong { .circle { border-color: $accent-green; color: $accent-green; } .status { color: $accent-green; } }
+      &.good { .circle { border-color: $accent-good; color: $accent-good; } .status { color: $accent-good; } }
+      &.moderate, &.emerging { .circle { border-color: $accent-yellow; color: $accent-yellow; } .status { color: $accent-yellow; } }
+      &.low { .circle { border-color: $accent-red; color: $accent-red; } .status { color: $accent-red; } }
+      .status { font-weight: 700; font-size: 0.85rem; margin-top: 0.5rem; }
+    }
+
+    .gap-card {
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+      &.high { background: rgba($accent-red, 0.1); color: #ff6b6b; border-color: rgba($accent-red, 0.2); }
+      &.medium { background: rgba($accent-yellow, 0.1); color: #d29922; border-color: rgba($accent-yellow, 0.2); }
+      &.low { background: rgba($accent-green, 0.1); color: #3fb950; border-color: rgba($accent-green, 0.2); }
+    }
+  }
+
+  .finalize-verdict-btn {
+    margin-top: auto;
+    background: linear-gradient(135deg, $accent-green 0%, color.adjust($accent-green, $lightness: -10%) 100%);
+    color: #fff;
+    border: none;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s;
+    &:hover { transform: translateY(-2px); }
+  }
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+
+
+// ── Scrollbar Mixin ─────────────────────────────────────────────────────────
+@mixin custom-scrollbar {
+  // Firefox
+  scrollbar-width: thin;
+  scrollbar-color: $border-color transparent;
+
+  // Chrome, Edge, Safari
+  &::-webkit-scrollbar {
+    width: 6px;  // Very thin for a sleek look
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent; // Keeps the background clean
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba($border-color, 0.5);
+    border-radius: 20px;
+    border: 1px solid transparent; // Adds "breathing room" around the thumb
+
+    &:hover {
+      background-color: $accent-pink; // Glows when you interact with it
+      box-shadow: 0 0 8px rgba($accent-pink, 0.3);
+    }
+  }
+}
+
+// ── Applying to your Containers ──────────────────────────────────────────────
+.sidebar-left,
+.main-content,
+.sidebar-right {
+  @include custom-scrollbar;
+  
+  // Optional: Only show scrollbar on hover for the sidebars 
+  // to keep the UI ultra-clean
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba($border-color, 0.8);
+    }
+  }
+}
+
+.normal {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  padding: 20px;
+  color: $text-muted;
+  font-weight: 600;
+  @include smooth-transition;
+  
+  &:hover {
+    background: rgba($accent-pink, 0.1);
+    border-color: rgba($accent-pink, 0.2);
+    color: $text-primary;
+    transform: translateY(-2px);
+  }
+}
+
+.match-score-widget {
+  &.low {
+    .circle {
+      border-color: #f85149; // Blood red
+      color: #f85149;
+      box-shadow: 0 0 20px rgba(#f85149, 0.4);
+    }
+    .status {
+      color: #f85149;
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: 2px;
+      animation: alert-blink 0.8s infinite; // Constant reminder of failure
+    }
+  }
+
+  &.exceptional {
+    .circle {
+      border-color: #2ea043;
+      color: #2ea043;
+      box-shadow: 0 0 20px rgba(#2ea043, 0.4);
+    }
+    .status { color: #2ea043; font-weight: 800; }
+  }
+}
+
+@keyframes alert-blink {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0.7; transform: scale(0.98); }
+}
+
+
+.job-title-container {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .role-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #888;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .job-title-text {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0;
+    // Optional: add a slight neon glow or accent color
+    background: linear-gradient(90deg, #fff, #888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

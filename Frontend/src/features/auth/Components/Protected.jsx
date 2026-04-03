@@ -2,6 +2,7 @@ import React from "react";
 import { Navigate } from "react-router";
 
 import { useGetme } from "../Hooks/useAuth";
+import LoadingSpinner from "../../Interview/Components/Spinner";
 
 
 const Protected = ({ children }) => {
@@ -12,7 +13,7 @@ const Protected = ({ children }) => {
     if (isPending) {
         return (
             <main>
-                <div className="loader"></div>
+                <LoadingSpinner/>
             </main>
         )
     }
