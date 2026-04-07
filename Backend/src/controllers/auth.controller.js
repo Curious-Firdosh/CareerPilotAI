@@ -42,7 +42,8 @@ export const registerUser = async (req, res) => {
     const user = await User.create({
       username,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+
     });
 
     // create JWT token
@@ -59,16 +60,21 @@ export const registerUser = async (req, res) => {
       sameSite: "strict"
     });
 
+    console.log('User Created SuccessFully');
+
     return res.status(201).json({
       success: true,
       message: "User registered successfully",
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        plan: user.plan,
+        credits: user.credits,
       }
     });
 
+    
   } catch (error) {
     console.error(error);
 
@@ -101,7 +107,7 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");;
 
     // security: don't reveal whether email exists
     if (!user) {
@@ -138,7 +144,9 @@ export const loginUser = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        plan: user.plan,
+        credits: user.credits,
       }
     });
 
@@ -213,9 +221,7 @@ export const getMeController = async (req, res) => {
     }
 
     // 2️⃣ Fetch user (lean for better performance)
-    const user = await User.findById(userId)
-      .select("_id username email")
-      .lean();
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({

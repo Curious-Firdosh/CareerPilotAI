@@ -1,6 +1,7 @@
 import {Router} from "express"
 import { getMeController, loginUser, logoutUser, registerUser } from "../controllers/auth.controller.js";
 import { authUser } from "../middleware/auth.middleware.js";
+import { loginLimiter, registerLimiter } from "../middleware/rateLimite.js";
 export const authRouter = Router();
 
 
@@ -10,7 +11,7 @@ export const authRouter = Router();
  * @access  public
 */
 
-authRouter.post('/register' , registerUser)
+authRouter.post('/register' , registerLimiter , registerUser)
 
 
 /**
@@ -19,7 +20,7 @@ authRouter.post('/register' , registerUser)
  * @access  public
 */
 
-authRouter.post('/login' , loginUser)
+authRouter.post('/login' ,loginLimiter, loginUser)
 
 
 /**

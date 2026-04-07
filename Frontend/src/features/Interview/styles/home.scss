@@ -1,7 +1,7 @@
 // ── Variables & Theme ─────────────────────────────────────────────
 $bg-page: #0d1117;
 $bg-card: #161b22;
-$bg-input: #0a0e14; // Slightly darker for contrast
+$bg-input: #010409; 
 $border-color: #30363d;
 $text-primary: #e6edf3;
 $text-muted: #7d8590;
@@ -20,24 +20,27 @@ $font-stack: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
 
+// Subtle background glow for the whole page wrapper
+.premium-generator-wrapper {
+  background: radial-gradient(circle at top center, rgba($accent, 0.05), $bg-page 40%);
+  min-height: 100vh;
+}
+
 // ── Page Layout ───────────────────────────────────────────
 .home-page {
   width: 100%;
-  min-height: 100vh;
-  background: $bg-page;
   color: $text-primary;
   font-family: $font-stack;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 40px;
-  @include premium-scroll;
+  padding: 60px 40px 0;
 }
 
 // ── Header ────────────────────────────────────────────────
 .page-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 50px;
   flex-shrink: 0;
   max-width: 800px;
 
@@ -46,14 +49,18 @@ $font-stack: 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: 800;
     letter-spacing: -1px;
     margin-bottom: 15px;
-    .highlight { color: $accent; text-shadow: 0 0 15px $accent-glow; }
+    
+    .highlight { 
+      color: $accent; 
+      text-shadow: 0 0 20px rgba($accent, 0.4); 
+    }
   }
 
   p {
     color: $text-muted;
-    max-width: 700px;
+    max-width: 600px;
     margin: 0 auto;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     line-height: 1.6;
   }
 }
@@ -61,281 +68,245 @@ $font-stack: 'Inter', system-ui, -apple-system, sans-serif;
 // ── The Card Container ────────────────────────────────────
 .interview-card {
   width: 100%;
-  max-width: 100%;
-  height: auto;
-  background: transparent;
-  border: none;
-  border-radius: 0;
+  max-width: 1100px; // Slightly wider for a better desktop experience
   display: flex;
   flex-direction: column;
-  overflow: visible;
-  box-shadow: none;
-  padding: 0;
 
   &__body {
     display: flex;
     flex: 1;
-    min-height: 0;
     gap: 2rem;
     
     @media (max-width: 900px) {
       flex-direction: column;
-      height: auto;
-      gap: 1.5rem;
     }
   }
 
   &__footer {
     padding: 32px 0;
-    background: transparent;
-    border-top: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-shrink: 0;
+    margin-top: 1rem;
     margin-bottom: 5rem;
+    border-top: 1px solid rgba($border-color, 0.5);
+
+    .footer-timing {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: $text-muted;
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 1.5rem;
+      text-align: center;
+    }
   }
 }
 
-// ── Panels (Independently Scrolling) ──────────────────────
+// ── Panels (Sleek Frosted Glass) ──────────────────────────
 .panel {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 2rem;
-  overflow-y: auto;
-  @include premium-scroll;
-  background: rgba($bg-card, 0.3);
-  border: 1px solid rgba($border-color, 0.2);
-  border-radius: 12px;
-  backdrop-filter: blur(8px);
-  min-height: fit-content;
-
-  &--left {
-    border-right: none;
-    position: relative;
-  }
+  background: rgba($bg-card, 0.6);
+  border: 1px solid rgba($border-color, 0.7);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  min-height: 400px;
 
   &__header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 5px;
-    h2 { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    gap: 12px;
+    margin-bottom: 0.5rem;
+
+    .panel-icon {
+      color: $accent;
+    }
+
+    h2 { 
+      font-size: 1.1rem; 
+      font-weight: 600; 
+      color: $text-primary;
+      margin: 0;
+    }
+  }
+
+  &__hint {
+    font-size: 0.85rem;
+    color: $text-muted;
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   &__textarea {
     width: 100%;
     flex: 1;
-    background: rgba($bg-input, 0.5);
-    border: 1px solid rgba($border-color, 0.3);
-    border-radius: 8px;
+    background: $bg-input;
+    border: 1px solid $border-color;
+    border-radius: 12px;
     padding: 16px;
     color: $text-primary;
     resize: none;
     outline: none;
     font-size: 0.95rem;
     line-height: 1.6;
-    transition: all 0.2s;
-    min-height: 200px;
+    transition: all 0.2s ease;
+    @include premium-scroll;
+
+    &::placeholder {
+      color: #484f58;
+    }
 
     &:focus {
       border-color: $accent;
-      box-shadow: 0 0 0 2px rgba($accent, 0.1);
-      background: rgba($bg-input, 0.8);
+      box-shadow: 0 0 0 3px rgba($accent, 0.15), inset 0 2px 4px rgba(0,0,0,0.5);
     }
+
+    &--small {
+      min-height: 120px;
+      flex: none; // Doesn't grow endlessly like the left panel
+    }
+  }
+
+  .char-counter {
+    text-align: right;
+    font-size: 0.75rem;
+    color: $text-muted;
+    font-weight: 500;
   }
 }
 
 // ── Panel Elements ────────────────────────────────────────
 .dropzone {
-  min-height: 160px;
-  border: 2px dashed rgba($border-color, 0.5);
+  border: 2px dashed $border-color;
   border-radius: 12px;
+  padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
-  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba($bg-input, 0.4);
+  transition: all 0.2s ease;
 
   &:hover {
     border-color: $accent;
-    background: rgba($accent, 0.08);
-    transform: translateY(-2px);
+    background: rgba($accent, 0.05);
+    
+    .dropzone__icon {
+      color: $accent;
+      transform: translateY(-2px);
+    }
   }
 
-  &:active {
-    transform: translateY(0);
+  &__icon { 
+    color: $text-muted; 
+    transition: all 0.2s ease;
   }
 
-  &__icon { font-size: 28px; }
-  &__title { font-weight: 600; font-size: 0.95rem; }
-  &__subtitle { font-size: 0.75rem; color: $text-muted; }
+  &__title { 
+    font-weight: 600; 
+    font-size: 0.95rem; 
+    color: $text-primary;
+    margin: 0;
+    text-align: center;
+  }
+
+  &__subtitle { 
+    font-size: 0.8rem; 
+    color: $text-muted; 
+    margin: 0;
+  }
 }
 
 .or-divider {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin: 20px 0;
-  span { font-size: 0.7rem; font-weight: 800; color: $text-muted; text-transform: uppercase; }
-  &::before, &::after { content: ""; flex: 1; height: 1px; background: rgba($border-color, 0.3); }
-}
-
-.generate-btn {
-  min-width: 240px;
-  padding: 14px 32px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, $accent 0%, #ff4d8f 100%);
-  color: white;
-  font-weight: 700;
-  border: none;
-  cursor: pointer;
-  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 20px rgba($accent, 0.25);
+  margin: 1rem 0;
   
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba($accent, 0.35);
+  span { 
+    padding: 0 1rem;
+    font-size: 0.75rem; 
+    font-weight: 700; 
+    color: $text-muted; 
+    text-transform: uppercase; 
   }
-
-  &:active {
-    transform: translateY(-1px);
-  }
-}
-
-// ── Recent Reports Grid ───────────────────────────────────
-.recent-reports {
-  width: 100%;
-  max-width: 1200px;
-  margin-top: 60px;
   
-  .reports-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    h2 { font-size: 2rem; font-weight: 800; }
+  &::before, &::after { 
+    content: ""; 
+    flex: 1; 
+    height: 1px; 
+    background: $border-color; 
   }
 }
 
-.reports-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-}
-
-.report-card {
-  background: $bg-card;
-  border: 1px solid $border-color;
+// Premium Info Box
+.info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(#1e90ff, 0.1);
+  border: 1px solid rgba(#1e90ff, 0.2);
   border-radius: 12px;
-  padding: 24px;
-  transition: 0.3s;
-  cursor: pointer;
+  margin-top: auto;
 
-  &:hover {
-    border-color: $accent;
-    transform: translateY(-5px) scale(1.01);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+  &__icon {
+    color: #1e90ff;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #c9d1d9;
+    line-height: 1.5;
+
+    strong {
+      color: #ffffff;
+    }
   }
 }
 
-// ── Match Score Badges ────────────────────────────────────
-.match-badge {
-  display: inline-flex;
+// ── Master Generate Button ────────────────────────────────
+.generate-btn {
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: fit-content;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 0.85rem;
-
-  &.match-excellent {
-    background: rgba(#2ea043, 0.15);
-    color: #2ea043;
-    border: 1px solid rgba(#2ea043, 0.3);
+  gap: 10px;
+  padding: 14px 36px;
+  border-radius: 10px;
+  background: $accent;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba($accent, 0.3);
+  
+  &:hover:not(:disabled) {
+    background: lighten($accent, 5%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba($accent, 0.4);
   }
 
-  &.match-good {
-    background: rgba(#8957e5, 0.15);
-    color: #a371f7;
-    border: 1px solid rgba(#8957e5, 0.3);
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
 
-  &.match-fair {
-    background: rgba(#d29922, 0.15);
-    color: #d29922;
-    border: 1px solid rgba(#d29922, 0.3);
-  }
-
-  &.match-low {
-    background: rgba(#f85149, 0.15);
-    color: #f85149;
-    border: 1px solid rgba(#f85149, 0.3);
-  }
-}
-
-// ── Responsive Reports ────────────────────────────────────
-@media (max-width: 1200px) {
-  .interview-card__body {
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .page-header h1 {
-    font-size: 2.2rem;
-  }
-}
-
-@media (max-width: 900px) {
-  .home-page {
-    padding: 40px 20px;
-  }
-
-  .interview-card__body {
-    flex-direction: column;
-  }
-
-  .reports-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .reports-header h2 {
-    font-size: 1.5rem;
-  }
-
-  .page-header h1 {
-    font-size: 1.8rem;
-  }
-
-  .panel {
-    padding: 1.5rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .home-page {
-    padding: 30px 16px;
-  }
-
-  .page-header {
-    margin-bottom: 40px;
-  }
-
-  .page-header h1 {
-    font-size: 1.5rem;
-  }
-
-  .page-header p {
-    font-size: 0.95rem;
-  }
-
-  .generate-btn {
-    min-width: 100%;
+  @media (max-width: 768px) {
+    width: 100%;
   }
 }

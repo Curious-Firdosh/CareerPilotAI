@@ -1,250 +1,120 @@
-import React, { useEffect, useRef, useState } from "react";
-import "../styles/home.scss";
-import { useInterview } from "../Hooks/useInterview";
-import { toast } from "sonner";
-import { useNavigate } from "react-router";
-import Loader from "../Components/Loader";
-import LandingHeader from "../Components/LandingHeader";
-import AllGeneratedReports from "../Components/allGeneratedReports";
-import { useParams } from "react-router"
-import LoadingSpinner from "../Components/Spinner";
+import React from 'react';
+import LandingHeader from '../Components/LandingHeader'; // Adjust path as needed
+import { BrainCircuit, Code2, Target, Sparkles, Star } from 'lucide-react';
+import '../styles/landingHeader.scss';
 
-const Home = () => {
-  const { loading, GenerateReport, GetReports, GetReportById } = useInterview();
-
-
-  const { id } = useParams();
-
-  const navigate = useNavigate();
-
- //@ LOCAL STATE for the button click specifically
-  const [isGenerating, setIsGenerating] = useState(false);
-
-  const [jobDescription, setJobDescription] = useState("");
-  const [selfDescription, setSelfDescription] = useState("");
-  const [resumeFile, setResumeFile] = useState(null);
-  const resumeInputRef = useRef();
-
-
-  useEffect(() => {
-    if (id) {
-      GetReportById(id);
-    }
-    else {
-      GetReports();
-    }
-  }, [id]);
-
-
-
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setResumeFile(file);
-    }
-  };
-
-  const handleGenerateReport = async () => {
-    // Validation
-    if (!jobDescription.trim()) {
-      return toast.error("Please paste a Job Description first.");
-    }
-
-    if (!resumeFile && !selfDescription.trim()) {
-      return toast.error(
-        "Please upload a Resume OR provide a Self-Description."
-      );
-    }
-
-
-    try {
-      setIsGenerating(true); // START LOADER ONLY HERE
-      const report = await GenerateReport({
-        jobDescription,
-        selfDescription,
-        resume: resumeFile,
-      });
-
-      navigate(`/interview/report/${report._id}`);
-
-    } catch (error) {
-      console.log(error);
-      setIsGenerating(false); // STOP LOADER ON ERROR
-
-      // Extract backend message safely
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong";
-
-      // Detect AI-specific failure
-      if (
-        message.toLowerCase().includes("ai") ||
-        message.toLowerCase().includes("model") ||
-        message.toLowerCase().includes("openai")
-      ) {
-        toast.error("AI is currently overloaded or facing issues. Try again later.");
-      } else if (message.toLowerCase().includes("network")) {
-        toast.error("Network issue. Check your internet.");
-      } else {
-        toast.error(message);
-      }
-    }
-  };
-
-  if (loading && !isGenerating) {
-    return <LoadingSpinner/>;
-  }
-
-  if (isGenerating) {
-    return (
-      <div className="loader-container">
-        <Loader isComplete={false} />
-        <p className="loader-text">
-          Generating your personalized interview plan...
-        </p>
-      </div>
-    );
-  }
-
-
-
+const LandingPage = () => {
   return (
-    <div>
+    <div className="premium-landing-page">
       <LandingHeader />
 
-      <main className="home-page">
-        {/* PAGE HEADER */}
-        <div className="page-header">
-          <h1>
-            Create Your Custom <span className="highlight">Interview Plan</span>
-          </h1>
-          <p>
-            Let our AI analyze the job requirements and your unique profile to
-            build a winning strategy.
-          </p>
+      {/* ── SPECIFICATIONS / FEATURES SECTION ── */}
+      <section className="specs-section">
+        <div className="section-header">
+          <h2 className="gradient-text">Engineered for Excellence</h2>
+          <p>We don't just ask generic questions. Our AI builds a comprehensive profile of your technical baseline and target role.</p>
         </div>
 
-        {/* MAIN CARD */}
-        <div className="interview-card">
-          {/* CARD BODY */}
-          <div className="interview-card__body">
-            {/* LEFT PANEL - JOB DESCRIPTION */}
-            <div className="panel panel--left">
-              <div className="panel__header">
-                <h2>Target Job Description</h2>
-              </div>
+        <div className="features-grid">
+          <div className="feature-card">
+            <div className="icon-wrapper"><BrainCircuit size={28} /></div>
+            <h3>Contextual AI Generation</h3>
+            <p>Our neural engine analyzes your resume against the job description to generate hyper-specific scenarios, skipping the boilerplate.</p>
+          </div>
 
-              <textarea
-                className="panel__textarea"
-                value={jobDescription}
-                onChange={(e) => setJobDescription(e.target.value)}
-                placeholder="Paste the full job description here...
-e.g. 'Senior Frontend Engineer at Google requires proficiency in React, TypeScript, and large-scale system design...'"
-                maxLength={5000}
-              />
+          <div className="feature-card">
+            <div className="icon-wrapper"><Code2 size={28} /></div>
+            <h3>Enterprise-Grade Evaluation</h3>
+            <p>Code isn't just checked for syntax. We evaluate architectural choices using industry standards, incorporating frameworks like McCall's and Boehm's software quality models to ensure robust system design.</p>
+          </div>
 
-              <div style={{ textAlign: "right", fontSize: "0.75rem", color: "#7d8590" }}>
-                {jobDescription.length} / 5000 chars
-              </div>
+          <div className="feature-card">
+            <div className="icon-wrapper"><Target size={28} /></div>
+            <h3>Targeted Tech Stacks</h3>
+            <p>Whether you are optimizing SQL queries or building out highly scalable MERN stack architectures, the interviewer adapts to your specific domain.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS SECTION ── */}
+      <section className="testimonials-section">
+        <div className="section-header">
+          <h2>Trusted by Top Engineers</h2>
+          <p>See how we are helping developers ace their technical rounds.</p>
+        </div>
+
+        <div className="testimonials-grid">
+          {/* Testimonial 1 */}
+          <div className="testimonial-card">
+            <div className="stars">
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
             </div>
-
-            {/* RIGHT PANEL - USER PROFILE */}
-            <div className="panel panel--right">
-              {/* UPLOAD RESUME SECTION */}
-              <div>
-                <div className="panel__header">
-                  <h2>Upload Resume</h2>
-                </div>
-
-                <label className="dropzone">
-                  <input
-                    type="file"
-                    hidden
-                    ref={resumeInputRef}
-                    accept=".pdf,.doc,.docx"
-                    onChange={handleFileChange}
-                  />
-                  <div className="dropzone__icon">☁️</div>
-                  <p className="dropzone__title">
-                    {resumeFile
-                      ? resumeFile.name
-                      : "Click to upload or drag & drop"}
-                  </p>
-                  <p className="dropzone__subtitle">PDF or DOCX (Max 5MB)</p>
-                </label>
-              </div>
-
-              {/* OR DIVIDER */}
-              <div className="or-divider">
-                <span>OR</span>
-              </div>
-
-              {/* QUICK SELF-DESCRIPTION SECTION */}
-              <div>
-                <div className="panel__header">
-                  <h2>Quick Self-Description</h2>
-                </div>
-
-                <textarea
-                  className="panel__textarea"
-                  placeholder="Briefly describe your experience, key skills, and years of experience. If you don't have a resume handy..."
-                  value={selfDescription}
-                  onChange={(e) => setSelfDescription(e.target.value)}
-                  maxLength={2000}
-                />
-              </div>
-
-              {/* INFO BOX */}
-              <div
-                style={{
-                  padding: "12px 16px",
-                  background: "rgba(30, 144, 255, 0.1)",
-                  border: "1px solid rgba(30, 144, 255, 0.3)",
-                  borderRadius: "8px",
-                  fontSize: "0.85rem",
-                  color: "#7d8590",
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: "8px",
-                }}
-              >
-                <span style={{ color: "#1e90ff", marginTop: "2px" }}>●</span>
-                <p style={{ margin: 0 }}>
-                  Either a <strong style={{ color: "#e6edf3" }}>Resume</strong> or{" "}
-                  <strong style={{ color: "#e6edf3" }}>Self Description</strong> is
-                  required to generate a personalized plan.
-                </p>
+            <p className="review-text">
+              "The JavaScript execution context and closure questions were exactly what I faced during my onsite at Meta. The feedback on my event-loop explanation was a game changer."
+            </p>
+            <div className="reviewer">
+              <div className="avatar">SJ</div>
+              <div className="info">
+                <h4>Sarah Jenkins</h4>
+                <span>Frontend Engineer @ Meta</span>
               </div>
             </div>
           </div>
 
-          {/* CARD FOOTER */}
-          <div className="interview-card__footer">
-            <span style={{ fontSize: "0.85rem", color: "#7d8590" }}>
-              AI-Powered Strategy Generation • Approx 30s
-            </span>
-            <button
-              onClick={handleGenerateReport}
-              className="generate-btn"
-              type="button"
-            >
-              ✨ Generate My Interview Strategy
-            </button>
+          {/* Testimonial 2 */}
+          <div className="testimonial-card">
+            <div className="stars">
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+            </div>
+            <p className="review-text">
+              "I was struggling to break into full-stack roles. The personalized roadmap honed my system design skills and helped me finally land a Senior Developer position."
+            </p>
+            <div className="reviewer">
+              <div className="avatar" style={{ background: '#1e90ff' }}>DK</div>
+              <div className="info">
+                <h4>David Kumar</h4>
+                <span>Full Stack Developer</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Testimonial 3 */}
+          <div className="testimonial-card">
+            <div className="stars">
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+            </div>
+            <p className="review-text">
+              "The ability to paste a job description and instantly get a tailored 45-minute mock interview feels like magic. I walked into my interview completely stress-free."
+            </p>
+            <div className="reviewer">
+              <div className="avatar" style={{ background: '#9333ea' }}>MT</div>
+              <div className="info">
+                <h4>Michael Torres</h4>
+                <span>Backend Engineer @ Stripe</span>
+              </div>
+            </div>
           </div>
         </div>
-      </main>
+      </section>
 
-      <AllGeneratedReports />
-
-      <div style={{ height: "5rem" }}></div>
-
-
+      {/* Simple Footer */}
+      <footer className="landing-footer">
+        <p>© 2026 CAREERPILOT AI. All rights reserved.</p>
+      </footer>
     </div>
   );
 };
 
-
-
-export default Home;
+export default LandingPage;

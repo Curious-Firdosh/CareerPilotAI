@@ -107,6 +107,9 @@ $font-stack: 'Inter', system-ui, -apple-system, sans-serif;
         @include smooth-transition;
         border-radius: 6px;
         font-weight: 600;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
         
         &:hover { 
           border-color: $accent;
@@ -245,5 +248,203 @@ $font-stack: 'Inter', system-ui, -apple-system, sans-serif;
         color: $text-muted;
       }
     }
+  }
+}
+
+// ── Variables & Theme ─────────────────────────────────────────────
+$bg-page: #0d1117;
+$bg-card: #161b22;
+$border-color: #30363d;
+$text-primary: #e6edf3;
+$text-muted: #7d8590;
+$accent: #ff2d78; 
+$accent-blue: #1e90ff;
+$font-stack: 'Inter', system-ui, -apple-system, sans-serif;
+
+.premium-landing-page {
+  background-color: $bg-page;
+  font-family: $font-stack;
+  color: $text-primary;
+  overflow-x: hidden;
+
+  // Shared Section Styles
+  section {
+    padding: 6rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+      padding: 4rem 1.5rem;
+    }
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    max-width: 700px;
+    margin-inline: auto;
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -0.5px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, $text-primary, $text-muted);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      font-size: 1.15rem;
+      color: $text-muted;
+      line-height: 1.6;
+    }
+  }
+
+  // ── Specifications Grid ─────────────────────────────────────────
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+  }
+
+  .feature-card {
+    background: rgba($bg-card, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid $border-color;
+    border-radius: 16px;
+    padding: 2.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      border-color: rgba($accent-blue, 0.5);
+      
+      .icon-wrapper {
+        background: rgba($accent-blue, 0.15);
+        color: $accent-blue;
+      }
+    }
+
+    .icon-wrapper {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid $border-color;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $text-primary;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: $text-muted;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+  }
+
+  // ── Testimonials Grid ───────────────────────────────────────────
+  .testimonials-section {
+    position: relative;
+    
+    // Subtle background glow for the testimonials section
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60vw;
+      height: 60vh;
+      background: radial-gradient(circle, rgba($accent, 0.05) 0%, transparent 70%);
+      z-index: 0;
+      pointer-events: none;
+    }
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .testimonial-card {
+    background: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: 16px;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .stars {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .review-text {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: $text-primary;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .reviewer {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: $accent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+        font-size: 1.1rem;
+      }
+
+      .info {
+        h4 {
+          margin: 0 0 0.25rem 0;
+          font-size: 1rem;
+          font-weight: 600;
+        }
+
+        span {
+          font-size: 0.85rem;
+          color: $text-muted;
+        }
+      }
+    }
+  }
+
+  // ── Footer ──────────────────────────────────────────────────────
+  .landing-footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid $border-color;
+    color: $text-muted;
+    font-size: 0.9rem;
   }
 }

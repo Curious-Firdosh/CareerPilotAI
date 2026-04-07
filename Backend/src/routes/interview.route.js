@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authUser } from "../middleware/auth.middleware.js";
 import { generateInterviewReport, GenerateResumePdfController, getAllInterviewReports, getInterviewReportById } from "../controllers/interview.controller.js";
 import { upload } from "../middleware/file.middileware.js";
+import { aiLimiter } from "../middleware/rateLimite.js";
 
 export const interviewRouter = Router()
 
@@ -12,7 +13,7 @@ export const interviewRouter = Router()
  * @access  private
  */
 
-interviewRouter.post("/" , authUser , upload.single("resume"), generateInterviewReport )
+interviewRouter.post("/" , authUser , aiLimiter , upload.single("resume"), generateInterviewReport )
 
 /**
  * @description controller to generate interview report in pdf format based on candidate's resume, self description and job description
@@ -20,7 +21,7 @@ interviewRouter.post("/" , authUser , upload.single("resume"), generateInterview
  * @access  private
  */
 
-interviewRouter.post('/pdf/:id' , authUser , GenerateResumePdfController )
+interviewRouter.post('/pdf/:id' , authUser ,aiLimiter, GenerateResumePdfController )
 
 /**
  * @route  GET api/interview/:reportId

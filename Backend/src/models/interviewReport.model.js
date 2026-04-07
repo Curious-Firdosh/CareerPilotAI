@@ -126,7 +126,7 @@ const InterviewReportSchema = new mongoose.Schema({
         title: {
             type: String,
             required: [true, "Job title is required"]
-        }
+        },
     }, 
     { timestamps: true }
 )

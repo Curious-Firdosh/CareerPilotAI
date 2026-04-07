@@ -1,12 +1,9 @@
-import React, {useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/interview.scss';
 import { useInterview } from '../Hooks/useInterview';
 import LoadingSpinner from '../Components/Spinner';
 import { useParams } from 'react-router';
 import { PdfLoader } from '../Components/PdfLoader';
-
-
-
 
 // Sub-component for individual questions
 const QuestionCard = ({ qId, question, intention, answer, isOpen, onToggle }) => {
@@ -36,37 +33,46 @@ const QuestionCard = ({ qId, question, intention, answer, isOpen, onToggle }) =>
   );
 };
 
+// Sub-component for the Active Navigation Header
+const ActiveNav = ({ activeTab, questionCount }) => {
+  return (
+    <div className="content-header">
+      <h1 className="heading">{activeTab}</h1>
+      <span className="badge">
+        {activeTab === 'Road Map'
+          ? '7-day plan'
+          : `${questionCount} questions`}
+      </span>
+    </div>
+  );
+};
+
 const Interview = () => {
   const [activeTab, setActiveTab] = useState('Technical Questions');
   const [expandedId, setExpandedId] = useState(null);
-  const {id} = useParams()
-  const { report , GetReportById , GenerateReportPdf} = useInterview();
+  const { id } = useParams()
+  const { report, GetReportById, GenerateReportPdf } = useInterview();
   const [loadingPdf, setLoadingPdf] = useState(false);
 
-   useEffect(() => {
-      if (id) {
-        GetReportById(id);
-      }
+  useEffect(() => {
+    if (id) {
+      GetReportById(id);
+    }
+  }, [id]);
 
-    }, [id]);
-
-  
-    
   const handleGeneratePdf = async (id) => {
     setLoadingPdf(true);
     await GenerateReportPdf(id);
     setLoadingPdf(false);
   }
 
-  if(loadingPdf){
-    return <main><PdfLoader/></main>
+  if (loadingPdf) {
+    return <main><PdfLoader /></main>
   }
 
-  
   if (!report) {
-    return <main><LoadingSpinner isLoading={true}/></main>;
+    return <main><LoadingSpinner isLoading={true} /></main>;
   }
-
 
   const getMatchStatus = (score) => {
     if (score >= 90) return { text: "HIRABLE. Actually smashing it.", class: "exceptional" };
@@ -107,65 +113,58 @@ const Interview = () => {
           ))}
         </nav>
 
-        <button className='generate-pdf-btn' 
+        <button className='generate-pdf-btn'
           disabled={loadingPdf}
           onClick={() => handleGeneratePdf(report._id)}>
           Generate PDF
         </button>
-
-        
       </aside>
 
-      {/* Main */}
-      <main className="main-content">
 
-        <div className="job-title-container">
-        </div>
+      <div>
+        {/* Main */}
+        <main className="main-content">
 
-        <div className="content-header">
-          <h1 className="heading">{activeTab}</h1>
-          <span className="badge">
-            {activeTab === 'Road Map'
-              ? '7-day plan'
-              : `${currentQuestions.length} questions`}
-          </span>
-        </div>
+      
 
-        {/* Roadmap */}
-        {activeTab === 'Road Map' ? (
-          <div className="road-map-container">
-            {report.preparationPlan?.map((step) => (
-              <div key={step.day} className="road-step">
-                <div className="dot"></div>
-                <div className="step-card">
-                  <h3>Day {step.day}: {step.focus}</h3>
-                  <ul>
-                    {step.tasks?.map((task, i) => (
-                      <li key={i}>{task}</li>
-                    ))}
-                  </ul>
+          {/* Roadmap */}
+          {activeTab === 'Road Map' ? (
+            <div className="road-map-container">
+              {report.preparationPlan?.map((step) => (
+                <div key={step.day} className="road-step">
+                  <div className="dot"></div>
+                  <div className="step-card">
+                    <h3>Day {step.day}: {step.focus}</h3>
+                    <ul>
+                      {step.tasks?.map((task, i) => (
+                        <li key={i}>{task}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="question-list">
-            {currentQuestions.map((q, idx) => (
-              <QuestionCard
-                key={idx}
-                qId={`Q${idx + 1}`}
-                question={q.question}
-                intention={q.intention}
-                answer={q.answer}
-                isOpen={expandedId === idx}
-                onToggle={() =>
-                  setExpandedId(expandedId === idx ? null : idx)
-                }
-              />
-            ))}
-          </div>
-        )}
-      </main>
+              ))}
+            </div>
+          ) : (
+            <div className="question-list">
+              {currentQuestions.map((q, idx) => (
+                <QuestionCard
+                  key={idx}
+                  qId={`Q${idx + 1}`}
+                  question={q.question}
+                  intention={q.intention}
+                  answer={q.answer}
+                  isOpen={expandedId === idx}
+                  onToggle={() =>
+                    setExpandedId(expandedId === idx ? null : idx)
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </main>
+
+
+      </div>
 
       {/* Right Sidebar */}
       <aside className="sidebar-right">

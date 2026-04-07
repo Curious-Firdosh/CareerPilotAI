@@ -1,27 +1,189 @@
-main {
-  height: 100vh;
+// ── Variables & Theme ─────────────────────────────────────────────
+$bg-page: #0d1117;
+$bg-card: #161b22;
+$bg-input: #0a0e14;
+$border-color: #30363d;
+$text-primary: #e6edf3;
+$text-muted: #7d8590;
+$accent: #ff2d78; 
+$accent-glow: rgba(255, 45, 120, 0.3);
+$font-stack: 'Inter', system-ui, -apple-system, sans-serif;
+
+// ── Master Layout ─────────────────────────────────────────────────
+.auth-layout {
+  display: flex;
+  min-height: 100vh;
   width: 100%;
+  font-family: $font-stack;
+  background-color: $bg-page;
+
+  // On small screens/tablets, stack vertically instead of side-by-side
+  @media (max-width: 900px) {
+    flex-direction: column;
+  }
+}
+
+// ── Left Side: AI Branding ────────────────────────────────────────
+.auth-brand {
+  flex: 1;
+  position: relative;
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+  border-right: 1px solid $border-color;
+  display: flex;
+  flex-direction: column;
+  padding: 3rem;
+  overflow: hidden;
+
+  // Tablet / Mobile Reflow
+  @media (max-width: 900px) {
+    flex: none; // Remove 50% width rule
+    padding: 1.5rem;
+    border-right: none;
+    border-bottom: 1px solid $border-color;
+    align-items: center; 
+  }
+
+  .brand-content {
+    position: relative;
+    z-index: 2; // Keep text above the glow orbs
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @media (max-width: 900px) {
+      height: auto; 
+    }
+  }
+
+  .logo-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $text-primary;
+    
+    .logo-icon {
+      font-size: 1.8rem;
+    }
+
+    @media (max-width: 900px) {
+      justify-content: center;
+    }
+  }
+
+  .quote-container {
+    max-width: 480px;
+
+    // Hide the large quote on mobile to keep focus on the login form
+    @media (max-width: 900px) {
+      display: none; 
+    }
+
+    h2 {
+      color: $text-primary;
+      font-size: clamp(1.75rem, 3vw + 1rem, 2.25rem); // Fluid typography
+      line-height: 1.3;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: $text-muted;
+      font-size: 1.1rem;
+    }
+  }
+
+  // AI Glowing Background Orbs
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+    z-index: 1;
+    animation: float 10s infinite alternate ease-in-out;
+
+    @media (max-width: 900px) {
+      display: none; // Hide complex blur animations on mobile for better performance
+    }
+  }
+
+  .orb-1 {
+    width: 400px;
+    height: 400px;
+    background-color: $accent;
+    top: -100px;
+    left: -100px;
+  }
+
+  .orb-2 {
+    width: 300px;
+    height: 300px;
+    background-color: #1e90ff; 
+    bottom: 10%;
+    right: -50px;
+    animation-delay: -5s;
+  }
+}
+
+// ── Right Side: The Form ──────────────────────────────────────────
+.auth-form-wrapper {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 2rem;
+  background-color: $bg-page;
 
-  .form-container {
-    min-width: 350px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  @media (max-width: 480px) {
+    padding: 1rem; // Less outer padding on small phones
+    align-items: flex-start; // Push form up so mobile keyboard doesn't cover it
+    padding-top: 2rem;
+  }
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+  background-color: $bg-card;
+  padding: 2.5rem;
+  border-radius: 16px;
+  border: 1px solid $border-color;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-sizing: border-box;
+
+  @media (max-width: 480px) {
+    padding: 1.5rem; // Shrink inner padding on small phones
+    gap: 1.25rem;
   }
 
   h1 {
     text-align: center;
-    color: rgb(207, 26, 26);
-    font-size: 2rem;
+    color: $text-primary;
+    font-size: clamp(1.4rem, 5vw, 1.75rem); // Fluid typography
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: $text-muted;
+    font-size: 0.95rem;
+    margin: -1rem 0 0.5rem 0;
+
+    @media (max-width: 480px) {
+      margin: -0.5rem 0 0.25rem 0;
+    }
   }
 
   form {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1.25rem;
   }
 
   .input-group {
@@ -29,63 +191,100 @@ main {
     flex-direction: column;
     gap: 0.5rem;
 
+    label {
+      font-size: 0.875rem;
+      color: $text-muted;
+      font-weight: 500;
+    }
+
     input {
-      border: none;
+      background-color: $bg-input;
+      border: 1px solid $border-color;
+      color: $text-primary;
       outline: none;
       padding-inline: 1rem;
-      padding-block: 0.75rem;
-      border-radius: 0.75rem;
+      padding-block: 0.875rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      width: 100%; 
+      box-sizing: border-box;
+
+      &::placeholder {
+        color: $text-muted;
+        opacity: 0.7;
+      }
+
+      &:focus {
+        border-color: $accent;
+        box-shadow: 0 0 0 3px $accent-glow;
+      }
     }
   }
 
-  a {
-    color: rgb(207, 26, 26);
-    text-decoration: none;
+  .primary-button {
+    background-color: $accent;
+    color: #ffffff;
+    border: none;
+    padding-block: 0.875rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 0.5rem;
+    width: 100%;
+
+    &:hover:not(:disabled) {
+      background-color: lighten($accent, 5%);
+      box-shadow: 0 0 12px $accent-glow;
+    }
+
+    &:disabled {
+      background-color: $border-color;
+      color: $text-muted;
+      cursor: not-allowed;
+    }
   }
 
-  p {
+  .footer-text {
     text-align: center;
-  }
+    font-size: 0.9rem;
+    color: $text-muted;
+    margin-top: 1rem;
 
-  /* Loader centered automatically by main flex */
+    @media (max-width: 480px) {
+      margin-top: 0.5rem;
+    }
 
-  .loader {
-    width: 84px;
-    height: 84px;
-    position: relative;
-    overflow: hidden;
-  }
+    a {
+      color: $accent;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
 
-  .loader::before,
-  .loader::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: rgb(207, 26, 26);
-    transform: translate(-50%, 100%) scale(0);
-    animation: push 2s infinite ease-in;
-  }
-
-  .loader::after {
-    animation-delay: 1s;
+      &:hover {
+        color: lighten($accent, 10%);
+        text-decoration: underline;
+      }
+    }
   }
 }
 
-@keyframes push {
-  0% {
-    transform: translate(-50%, 100%) scale(1);
-  }
-  15%, 25% {
-    transform: translate(-50%, 50%) scale(1);
-  }
-  50%, 75% {
-    transform: translate(-50%, -30%) scale(0.5);
-  }
-  80%, 100% {
-    transform: translate(-50%, -50%) scale(0);
+// Float Animation for AI Orbs
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, 40px) scale(1.1); }
+}
+
+.logo {
+  font-weight: 900;
+  letter-spacing: 2px;
+  font-size: 1.2rem;
+  color: $text-primary;
+  
+  .highlight { 
+    color: $accent;
+    text-shadow: 0 0 12px $accent-glow;
   }
 }
