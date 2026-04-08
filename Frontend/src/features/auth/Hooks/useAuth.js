@@ -1,6 +1,7 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { AuthApi } from "../Services/auth.api"
 import { toast } from "sonner"
+import { useNavigate } from "react-router"
 
 
 export const useLogin = () => {
@@ -42,12 +43,17 @@ export const useGetme = () => {
 
 export const useLogout = () => {
 
+    const queryClient = useQueryClient()
+    const navigate = useNavigate()
+
     const result = useMutation({
         mutationFn: AuthApi.logout,
         onSuccess: (data) => {
             console.log(data.user);
+            queryClient.removeQueries(['getuserDetails']);
+            toast.success("Log Out SuccessFullly")
+            navigate('/login')
             
-            toast.success("Log Out SuccessFullly ")
         },
         onError: (error) => toast.error(error?.response?.data?.message || error.message)
     })

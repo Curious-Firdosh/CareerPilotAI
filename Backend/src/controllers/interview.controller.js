@@ -235,11 +235,20 @@ export const GenerateResumePdfController = async (req, res) => {
         }
 
 
-    } catch (err) {
-        console.error("Error generating interview report PDF:", err.message);
+    } catch (error) {
+        console.error("PDF Generation Error:", error);
+
+        if (
+            error?.error?.code === 503 ||
+            error?.error?.message?.includes("high demand")
+        ) {
+            return res.status(503).json({
+                message: "Server is busy. Please try again in a few seconds."
+            });
+        }
 
         return res.status(500).json({
-            error: err.message || "Failed to generate interview report PDF"
+            message: "Something went wrong while generating PDF."
         });
     }
 };

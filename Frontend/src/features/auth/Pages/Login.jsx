@@ -29,7 +29,7 @@ const Login = () => {
                 <div className="brand-content">
                     {/* Replace this div with your actual <img src={logo} /> */}
                     <div className="logo-placeholder">
-                        
+
                         <div className="logo">
                             CAREER<span className="highlight">PILOT</span> AI
                         </div>
@@ -87,7 +87,10 @@ const Login = () => {
                     </form>
 
                     <p className="footer-text">
-                        Don't have an account? <Link to={'/register'}>Start for free</Link>
+                        Don't have an account?{" "}
+                        <Link to="/register" className="link-button">
+                            Start for free
+                        </Link>
                     </p>
                 </div>
             </div>

@@ -13,24 +13,13 @@ const LandingHeader = () => {
   const user = userData?.data;
 
   const handleLogout = () => {
-    logOutMutation.mutate(
-      undefined,
-      {
-        onSuccess: () => {
-          // Redirect to the login page after successful logout
-          navigate('/login');
-        },
-        onError: (error) => {
-          console.error("Logout failed:", error);
-        }
-      }
-    );
+    logOutMutation.mutate();
   };
 
   
   // Assuming navigate is already defined via useNavigate() in your component
 
-  if (user.credits === 0) {
+  if (user && user.credits === 0) {
     return (
       <div style={{
         display: 'flex',
@@ -144,7 +133,7 @@ const LandingHeader = () => {
             disabled={logOutMutation.isPending}
             style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
           >
-            {logOutMutation.isPending ? "..." : "LogOut"}
+            {'LogOut'}
             <LogOut size={15} />
           </button>
         </div>
