@@ -7,8 +7,8 @@ import { DbConnect } from "./src/config/db.js";
 
 await DbConnect();
 
-app.get('/' , () => {
-    console.log("Hello How Are You???")
+app.get('/' , (req ,res) => {
+  res.send("Welcome To The Backend")
   
 })
 
