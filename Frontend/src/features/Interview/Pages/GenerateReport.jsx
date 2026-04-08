@@ -4,7 +4,7 @@ import { useInterview } from "../Hooks/useInterview";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router";
 import Loader from "../Components/Loader";
-import AllGeneratedReports from "../Components/allGeneratedReports";
+import AllGeneratedReports from "../Components/AllGeneratedReports";
 import LoadingSpinner from "../Components/Spinner";
 
 // Added Icons for a premium feel
