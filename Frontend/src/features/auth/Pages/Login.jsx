@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import '../auth.form.scss'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router-dom'
 import { useLogin } from '../Hooks/useAuth'
 
 const Login = () => {

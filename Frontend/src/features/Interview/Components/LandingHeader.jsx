@@ -1,6 +1,6 @@
 import React from 'react';
 import '../styles/landingHeader.scss';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { Diamond, LogOut, Zap } from 'lucide-react';
 import { useGetme, useLogout } from '../../auth/Hooks/useAuth';
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import '../styles/generatedReports.scss'
 import { useInterview } from '../Hooks/useInterview';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const AllGeneratedReports = () => {
 

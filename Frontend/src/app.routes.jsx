@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router-dom";
 import Login from "./features/auth/Pages/Login";
 import Register from "./features/auth/Pages/Register";
 import Home from "./features/Interview/Pages/Home";
@@ -10,22 +10,42 @@ import GenerateReport from "./features/Interview/Pages/GenerateReport";
 export const router = createBrowserRouter([
     {
         path: "/login",
-        element: <PublicRoute><Login/></PublicRoute>
+        element: (
+            <PublicRoute>
+                <Login />
+            </PublicRoute>
+        )
     },
     {
         path: "/register",
-        element: <PublicRoute><Register/></PublicRoute>
+        element: (
+            <PublicRoute>
+                <Register />
+            </PublicRoute>
+        )
     },
     {
         path: "/",
-        element: <Protected><Home/></Protected>
+        element: (
+            <Protected>
+                <Home />
+            </Protected>
+        )
     },
     {
-        path : '/generatereport',
-        element : <Protected><GenerateReport/></Protected>
+        path: "/generatereport",
+        element: (
+            <Protected>
+                <GenerateReport />
+            </Protected>
+        )
     },
     {
         path: "/interview/report/:id",
-        element: <Interview/>
+        element: (
+            <Protected>
+                <Interview />
+            </Protected>
+        )
     }
-])
+]);

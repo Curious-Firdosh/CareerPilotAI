@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../styles/interview.scss';
 import { useInterview } from '../Hooks/useInterview';
 import LoadingSpinner from '../Components/Spinner';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { PdfLoader } from '../Components/PdfLoader';
 
 // Sub-component for individual questions

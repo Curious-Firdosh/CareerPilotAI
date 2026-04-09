@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate } from "react-router";
+import { Navigate } from "react-router-dom";
 
 import { useGetme } from "../Hooks/useAuth";
 import LoadingSpinner from "../../Interview/Components/Spinner";
@@ -7,16 +7,9 @@ import LoadingSpinner from "../../Interview/Components/Spinner";
 
 const Protected = ({ children }) => {
 
-  const { data: user, isPending } = useGetme()
+  const { data: user, isPending } = useGetme();
 
-
-    if (isPending) {
-        return (
-            <main>
-                <LoadingSpinner/>
-            </main>
-        )
-    }
+  if (isPending) return <LoadingSpinner />;
 
   if (!user) {
     return <Navigate to="/login" replace />;

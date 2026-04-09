@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "../styles/home.scss"; // Assuming this is where the new SCSS goes
 import { useInterview } from "../Hooks/useInterview";
 import { toast } from "sonner";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/Loader";
 import AllGeneratedReports from "../Components/AllGeneratedReports";
 import LoadingSpinner from "../Components/Spinner";
