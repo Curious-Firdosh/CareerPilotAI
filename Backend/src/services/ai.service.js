@@ -1,6 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
 import { ENV } from "../utils/ENV.js";
-import { z } from "zod";
 import puppeteer from 'puppeteer';
 
 
@@ -159,7 +158,7 @@ export const GenerateInterviewReport = async ({ resume, selfDescription, jobDesc
     `;
 
     const response = await genai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-3-flash-preview",
         contents: Prompt,
         config: {
             responseMimeType: "application/json",
@@ -410,7 +409,7 @@ export const GenerateHtmlContent = async ({ resume, selfDescription, jobDescript
 
     //gemini-3-flash-preview
     const response = await genai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-3-flash-preview",
         contents: PromptForHtml,
 
     })
