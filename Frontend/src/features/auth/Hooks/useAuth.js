@@ -6,10 +6,11 @@ import { useNavigate } from "react-router-dom"
 
 export const useLogin = () => {
 
+    const queryClient = useQueryClient();
     const result = useMutation({
-        mutationKey: ['login'],
         mutationFn: AuthApi.login,
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['getuserDetails'] });
             toast.success("Log In SuccessFully ")
         },
         onError: (error) => toast.error(error?.response?.data?.message || error.message)
@@ -19,11 +20,13 @@ export const useLogin = () => {
 
 export const useRegister = () => {
 
+     const queryClient = useQueryClient();
+
     const result = useMutation({
-        mutationKey: ['register'],
         mutationFn: AuthApi.register,
         onSuccess: (data) => {
             console.log(data.user);
+            queryClient.invalidateQueries({ queryKey: ['getuserDetails'] });
             toast.success("Account Created SuccessFully ")
         },
         onError: (error) => toast.error(error?.response?.data?.message || error.message)
@@ -50,7 +53,7 @@ export const useLogout = () => {
         mutationFn: AuthApi.logout,
         onSuccess: (data) => {
             console.log(data.user);
-            queryClient.removeQueries(['getuserDetails']);
+            queryClient.removeQueries({ queryKey: ['getuserDetails'] });
             toast.success("Log Out SuccessFullly")
             navigate('/login')
             
