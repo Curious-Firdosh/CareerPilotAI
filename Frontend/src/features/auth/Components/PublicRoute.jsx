@@ -5,21 +5,21 @@ import { Navigate } from "react-router-dom";
 
 
 const PublicRoute = ({ children }) => {
-
-    const { data: user, isPending} = useGetme();
+    const { data, isPending, isError } = useGetme();
 
     if (isPending) {
-        return (
-            <main>
-                <LoadingSpinner />
-            </main>
-        )
+        return <LoadingSpinner />;
     }
 
-    if (user) {
+    if (isError) {
+        return children; // allow access if API failed
+    }
+
+    if (data) {
         return <Navigate to="/" replace />;
     }
-    return children
+
+    return children;
 }
 
 export default PublicRoute

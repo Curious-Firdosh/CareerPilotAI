@@ -10,7 +10,7 @@ export const useLogin = () => {
     const result = useMutation({
         mutationFn: AuthApi.login,
         onSuccess: (data) => {
-            queryClient.setQueryData(['getuserDetails'], data.user);
+            queryClient.setQueryData(['getuserDetails'], data);
             toast.success("Log In SuccessFully ")
         },
         onError: (error) => toast.error(error?.response?.data?.message || error.message)
@@ -25,7 +25,7 @@ export const useRegister = () => {
     const result = useMutation({
         mutationFn: AuthApi.register,
         onSuccess: (data) => {
-            queryClient.setQueryData(['getuserDetails'], data.user);
+            queryClient.setQueryData(['getuserDetails'], data);
             toast.success("Account Created Successfully");
         },
         onError: (error) => toast.error(error?.response?.data?.message || error.message)

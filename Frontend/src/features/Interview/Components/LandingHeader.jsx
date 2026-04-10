@@ -9,8 +9,8 @@ const LandingHeader = () => {
   const logOutMutation = useLogout();
 
   // Fetch user data safely
-  const { data: userData } = useGetme();
-  const user = userData?.data;
+  const { data: user } = useGetme();
+ 
 
   const handleLogout = () => {
     logOutMutation.mutate();
@@ -19,7 +19,7 @@ const LandingHeader = () => {
   
   // Assuming navigate is already defined via useNavigate() in your component
 
-  if (user && user.credits === 0) {
+  if (user && user.user?.credits === 0) {
     return (
       <div style={{
         display: 'flex',
@@ -113,7 +113,7 @@ const LandingHeader = () => {
               }}
             >
               <Diamond size={18} color="#1e90ff" fill="rgba(30, 144, 255, 0.2)" />
-              <span>{user.credits} Credits</span>
+              <span>{user.user?.credits} Credits</span>
             </div>
           )}
 

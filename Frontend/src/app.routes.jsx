@@ -11,43 +11,43 @@ export const router = createBrowserRouter([
     {
         path: "/login",
         element: (
-            <PublicRoute>
+            
                 <Login />
-            </PublicRoute>
+            
         )
     },
     {
         path: "/register",
         element: (
-            <PublicRoute>
+           
                 <Register />
-            </PublicRoute>
+        
         )
     },
     {
         path: "/",
         element: (
-            <Protected>
+            
                 <Home />
-            </Protected>
+        
 
         )
     },
     {
         path: "/generatereport",
         element: (
-            <Protected>
+            
                 <GenerateReport />
-            </Protected>
+            
         )
     },
     {
         path: "/interview/report/:id",
         element: (
 
-            <Protected>
+           
                 <Interview />
-            </Protected>
+           
 
         )
     }
