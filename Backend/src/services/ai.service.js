@@ -158,7 +158,7 @@ export const GenerateInterviewReport = async ({ resume, selfDescription, jobDesc
     `;
 
     const response = await genai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-2.5-flash",
         contents: Prompt,
         config: {
             responseMimeType: "application/json",
@@ -409,7 +409,7 @@ export const GenerateHtmlContent = async ({ resume, selfDescription, jobDescript
 
     //gemini-3-flash-preview
     const response = await genai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-2.5-flash",
         contents: PromptForHtml,
 
     })

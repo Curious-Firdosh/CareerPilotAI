@@ -9,8 +9,8 @@ export const useLogin = () => {
     const queryClient = useQueryClient();
     const result = useMutation({
         mutationFn: AuthApi.login,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['getuserDetails'] });
+        onSuccess: (data) => {
+            queryClient.setQueryData(['getuserDetails'], data.user);
             toast.success("Log In SuccessFully ")
         },
         onError: (error) => toast.error(error?.response?.data?.message || error.message)
