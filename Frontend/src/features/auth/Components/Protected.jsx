@@ -7,14 +7,13 @@ import LoadingSpinner from "../../Interview/Components/Spinner";
 
 const Protected = ({ children }) => {
 
-  const { data: user, isPending } = useGetme();
+  const { data, isPending, isError } = useGetme();
 
-  if (isPending) return <LoadingSpinner />;
+  if (isPending) return <LoadingSpinner />
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+  if (isError) return <Navigate to="/login" replace />
 
+  if (!data) return <Navigate to="/login" replace />
   return children;
 };
 

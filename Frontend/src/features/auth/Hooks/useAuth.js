@@ -20,14 +20,13 @@ export const useLogin = () => {
 
 export const useRegister = () => {
 
-     const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
     const result = useMutation({
         mutationFn: AuthApi.register,
         onSuccess: (data) => {
-            console.log(data.user);
-            queryClient.invalidateQueries({ queryKey: ['getuserDetails'] });
-            toast.success("Account Created SuccessFully ")
+            queryClient.setQueryData(['getuserDetails'], data.user);
+            toast.success("Account Created Successfully");
         },
         onError: (error) => toast.error(error?.response?.data?.message || error.message)
     })
@@ -35,13 +34,13 @@ export const useRegister = () => {
 }
 
 export const useGetme = () => {
-
-    const result = useQuery({
+    return useQuery({
         queryKey: ['getuserDetails'],
         queryFn: AuthApi.getme,
-        retry: false
+        retry: false,
+        staleTime: 5 * 60 * 1000, // 5 min cache
+        refetchOnWindowFocus: false
     })
-    return result
 }
 
 export const useLogout = () => {
@@ -56,7 +55,7 @@ export const useLogout = () => {
             queryClient.removeQueries({ queryKey: ['getuserDetails'] });
             toast.success("Log Out SuccessFullly")
             navigate('/login')
-            
+
         },
         onError: (error) => toast.error(error?.response?.data?.message || error.message)
     })
