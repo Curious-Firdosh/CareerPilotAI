@@ -52,7 +52,7 @@ export const generateInterviewReport = async (req, res) => {
                     }
                 }
             },
-            { new: true, session }
+            {returnDocument :"after", session }
         );
 
         if (!user) {

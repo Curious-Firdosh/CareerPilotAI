@@ -6,12 +6,14 @@ import LoadingSpinner from "../../Interview/Components/Spinner";
 
 
 const Protected = ({ children }) => {
-  const { data, isPending, isError } = useGetme();
+  const { data, isPending} = useGetme();
 
-  if (isPending) return <LoadingSpinner />;
-
-  if (isError) {
-    return <Navigate to="/login" replace />;
+  if (isPending) {
+    return (
+      <div className="main">
+          <LoadingSpinner isLoading={true}/>
+      </div>
+    )
   }
 
   if (!data) {

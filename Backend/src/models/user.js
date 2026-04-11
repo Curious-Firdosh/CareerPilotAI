@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
     ],
     credits: {
         type: Number,
-        default: 40
+        default: 30
     },
     // ⏳ Credit expiry (optional but strong)
     creditExpiry: {

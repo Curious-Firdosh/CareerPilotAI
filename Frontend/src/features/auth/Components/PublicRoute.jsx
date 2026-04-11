@@ -8,9 +8,12 @@ const PublicRoute = ({ children }) => {
     const { data, isPending, isError } = useGetme();
 
     if (isPending) {
-        return <LoadingSpinner />;
+        return (
+            <div className="main">
+                <LoadingSpinner isLoading={true} />
+            </div>
+        )
     }
-
     if (isError) {
         return children; // allow access if API failed
     }

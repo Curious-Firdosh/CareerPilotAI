@@ -288,3 +288,10 @@ $font-stack: 'Inter', system-ui, -apple-system, sans-serif;
     text-shadow: 0 0 12px $accent-glow;
   }
 }
+
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; // full screen height
+}
