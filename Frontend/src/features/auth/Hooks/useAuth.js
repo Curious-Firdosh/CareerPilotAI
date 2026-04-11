@@ -4,60 +4,61 @@ import { toast } from "sonner"
 import { useNavigate } from "react-router-dom"
 
 
+// 🔹 LOGIN
 export const useLogin = () => {
-
     const queryClient = useQueryClient();
-    const result = useMutation({
+
+    return useMutation({
         mutationFn: AuthApi.login,
-        onSuccess: (data) => {
-            queryClient.setQueryData(['getuserDetails'], data);
-            toast.success("Log In SuccessFully ")
+        onSuccess: async () => {
+            await queryClient.invalidateQueries(['getuserDetails']); // ✅ refetch real user
+            toast.success("Login Successfully");
         },
-        onError: (error) => toast.error(error?.response?.data?.message || error.message)
-    })
-    return result
-}
+        onError: (error) =>
+            toast.error(error?.response?.data?.message || error.message),
+    });
+};
 
+// 🔹 REGISTER
 export const useRegister = () => {
-
     const queryClient = useQueryClient();
 
-    const result = useMutation({
+    return useMutation({
         mutationFn: AuthApi.register,
-        onSuccess: (data) => {
-            queryClient.setQueryData(['getuserDetails'], data);
+        onSuccess: async () => {
+            await queryClient.invalidateQueries(['getuserDetails']); // ✅ refetch
             toast.success("Account Created Successfully");
         },
-        onError: (error) => toast.error(error?.response?.data?.message || error.message)
-    })
-    return result
-}
+        onError: (error) =>
+            toast.error(error?.response?.data?.message || error.message),
+    });
+};
 
+// 🔹 GET ME
 export const useGetme = () => {
     return useQuery({
         queryKey: ['getuserDetails'],
         queryFn: AuthApi.getme,
-        retry: false,
-        staleTime: 5 * 60 * 1000, // 5 min cache
-        refetchOnWindowFocus: false
-    })
-}
+        retry: 1, // ✅ avoid instant logout on small failure
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
+    });
+};
 
+
+// 🔹 LOGOUT
 export const useLogout = () => {
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
-    const queryClient = useQueryClient()
-    const navigate = useNavigate()
-
-    const result = useMutation({
+    return useMutation({
         mutationFn: AuthApi.logout,
-        onSuccess: (data) => {
-            console.log(data.user);
-            queryClient.removeQueries({ queryKey: ['getuserDetails'] });
-            toast.success("Log Out SuccessFullly")
-            navigate('/login')
-
+        onSuccess: async () => {
+            await queryClient.invalidateQueries(['getuserDetails']); // ✅ clear auth state properly
+            toast.success("Logout Successfully");
+            navigate('/login');
         },
-        onError: (error) => toast.error(error?.response?.data?.message || error.message)
-    })
-    return result
-}
+        onError: (error) =>
+            toast.error(error?.response?.data?.message || error.message),
+    });
+};

@@ -24,7 +24,7 @@ interviewRouter.post("/" , authUser , aiLimiter , upload.single("resume"), gener
 interviewRouter.post('/pdf/:id' , authUser ,aiLimiter, GenerateResumePdfController )
 
 /**
- * @route  GET api/interview/:reportId
+ * @route  GET api/interview/
  * @description --> Get all interview reports of the user
  * @access  private
  */

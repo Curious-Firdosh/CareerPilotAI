@@ -15,52 +15,76 @@ import mongoose from "mongoose";
 
 export const generateInterviewReport = async (req, res) => {
     let session;
+    let creditsDeducted = false;
 
     try {
         const resume = req.file;
 
-        // 🔒 1. Validation
         if (!resume) {
-            return res.status(400).json({ message: "Resume file is required" });
+            return res.status(400).json({
+                code: "FILE_REQUIRED",
+                message: "Resume file is required"
+            });
         }
 
         if (resume.size > 2 * 1024 * 1024) {
-            return res.status(400).json({ message: "File too large (max 2MB)" });
+            return res.status(400).json({
+                code: "FILE_TOO_LARGE",
+                message: "File too large (max 2MB)"
+            });
         }
+
 
         const { selfDescription, jobDescription } = req.body;
 
         if (!jobDescription) {
-            return res.status(400).json({ message: "Missing required fields" });
+            return res.status(400).json({
+                code: "MISSING_FIELDS",
+                message: "Missing required fields"
+            });
         }
+
+
 
         // 🔥 2. TRANSACTION → Deduct credits (FAST ONLY)
         session = await mongoose.startSession();
         session.startTransaction();
 
-        const user = await User.findOneAndUpdate(
-            {
-                _id: req.user.id,
-                credits: { $gte: 5 }
-            },
-            {
-                $inc: { credits: -5 },
-                $push: {
-                    usageHistory: {
-                        type: "Resume Analysis",
-                        creditsUsed: 5
-                    }
-                }
-            },
-            {returnDocument :"after", session }
-        );
+
+        const user = await User.findOne({
+            _id: req.user.id
+        }).session(session);
 
         if (!user) {
             await session.abortTransaction();
-            session.endSession();
-
-            return res.status(403).json({ message: "Not enough credits" });
+            return res.status(404).json({
+                code: "USER_NOT_FOUND",
+                message: "User not found"
+            });
         }
+
+        if (user.isGeneratingReport) {
+            await session.abortTransaction();
+            return res.status(400).json({
+                code: "ALREADY_GENERATING",
+                message: "Report is already being generated. Please wait."
+            });
+        }
+
+        if (user.credits < 5) {
+            await session.abortTransaction();
+            return res.status(400).json({
+                code: "INSUFFICIENT_CREDITS",
+                message: "You don’t have enough credits."
+            });
+        }
+
+        user.credits -= 5;
+        user.isGeneratingReport = true;
+
+        await user.save({ session });
+
+        creditsDeducted = true;
 
         await session.commitTransaction();
         session.endSession();
@@ -93,10 +117,19 @@ export const generateInterviewReport = async (req, res) => {
             ...interviewReportByAi
         }], { session });
 
+         await User.findByIdAndUpdate(
+            req.user.id,
+            { $set: { isGeneratingReport: false } },
+            { session }
+        );
+
         await session.commitTransaction();
         session.endSession();
 
+        
+
         return res.status(201).json({
+            code: "SUCCESS",
             message: "Interview Report Generated Successfully",
             interviewReport: interviewReport[0]
         });
@@ -104,19 +137,39 @@ export const generateInterviewReport = async (req, res) => {
     } catch (err) {
         console.error("Error generating interview report:", err.message);
 
-        // 🔁 Refund (safe fallback)
-        await User.findByIdAndUpdate(req.user.id, {
-            $inc: { credits: 5 },
-            $push: {
-                usageHistory: {
-                    type: "Refund - Resume Analysis",
-                    creditsUsed: -5
+        // 🔥 Detect AI error
+        const aiCode = err?.error?.code || err?.response?.status;
+        const aiMessage = err?.error?.message || err?.message || "";
+
+
+        if (creditsDeducted) {
+            await User.findByIdAndUpdate(req.user.id, {
+                $inc: { credits: 5 },
+                $set: { isGeneratingReport: false },
+                $push: {
+                    usageHistory: {
+                        type: "Refund - Resume Analysis",
+                        creditsUsed: -5
+                    }
                 }
-            }
-        });
+            });
+        }
+
+        if (
+            aiCode === 503 ||
+            aiMessage.toLowerCase().includes("timeout") ||
+            aiMessage.toLowerCase().includes("overloaded") ||
+            aiMessage.toLowerCase().includes("high demand")
+        ) {
+            return res.status(503).json({
+                code: "AI_BUSY",
+                message: "AI is under high load. Please try again."
+            });
+        }
 
         return res.status(500).json({
-            error: err.message || "Failed to generate interview report"
+            code: "REPORT_GENERATION_FAILED",
+            message: "Failed to generate interview report"
         });
 
     } finally {
@@ -130,16 +183,19 @@ export const generateInterviewReport = async (req, res) => {
  */
 
 export const GenerateResumePdfController = async (req, res) => {
+
+    const session = await mongoose.startSession();
+
     try {
         const { id } = req.params;
 
-        // 🔒 1. Validate ID
+        // 1. Validate ID
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ message: "Invalid ID" });
         }
 
-        // 🔒 2. Fetch report
-        const interviewReport = await InterviewReportModel.findOne({
+        // 2. Fetch report
+        const interviewReport = await InterviewReportModel.findById({
             _id: id,
             user: req.user.id
         });
@@ -152,44 +208,58 @@ export const GenerateResumePdfController = async (req, res) => {
 
         const { resumeText, selfDescription, jobDescription } = interviewReport;
 
-        // 🔒 3. Validate data
         if (!resumeText || !jobDescription) {
             return res.status(400).json({
                 message: "Invalid report data"
             });
         }
 
-        const user = await User.findOneAndUpdate(
-            {
-                _id: req.user.id,
-                isGeneratingPdf: false,
-                credits: { $gte: 5 }
-            },
-            {
-                $inc: { credits: -5 },
-                $set: { isGeneratingPdf: true },
-                $push: {
-                    usageHistory: {
-                        type: "PDF Generation",
-                        creditsUsed: 5
-                    }
-                },
+        // =========================
+        // 🔒 TRANSACTION START
+        // =========================
+        await session.startTransaction();
 
-            },
-            { returnDocument: 'after' }
-        )
+        const user = await User.findOne({
+            _id: req.user.id
+        }).session(session);
 
-        if (!user) {
+        if (user.isGeneratingPdf) {
+            await session.abortTransaction();
             return res.status(400).json({
-                message: "Either already generating or insufficient credits"
+                code: "ALREADY_GENERATING",
+                message: "PDF is already being generated. Please wait."
             });
         }
 
-        try {
-            console.log("Generating PDF...");
+        if (user.credits < 5) {
+            await session.abortTransaction();
+            return res.status(400).json({
+                code: "INSUFFICIENT_CREDITS",
+                message: "You don’t have enough credits."
+            });
+        }
 
-            // 🔒 7. Generate PDF
-            const pdfBuffer = await GenerateHtmlContent({
+        // Lock + deduct
+        user.credits -= 5;
+        user.isGeneratingPdf = true;
+        user.usageHistory.push({
+            type: "PDF Generation",
+            creditsUsed: 5
+        });
+
+        await user.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
+
+        // =========================
+        // 🚀 OUTSIDE TRANSACTION
+        // =========================
+
+        let pdfBuffer;
+
+        try {
+            pdfBuffer = await GenerateHtmlContent({
                 resume: resumeText,
                 selfDescription,
                 jobDescription
@@ -199,56 +269,62 @@ export const GenerateResumePdfController = async (req, res) => {
                 throw new Error("PDF generation failed");
             }
 
-            //! If this fails: -- issue that you have to solveee
-            await User.findByIdAndUpdate(req.user.id,
-                {
-                    $set: { isGeneratingPdf: false }
-                }
-            )
-
-            console.log("PDF generated successfully");
-
-            res.set({
-                "Content-Type": "application/pdf",
-                "Content-Disposition": `attachment; filename=resume_${id}.pdf`
+            // unlock
+            await User.findByIdAndUpdate(req.user.id, {
+                $set: { isGeneratingPdf: false }
             });
 
-            return res.send(pdfBuffer);
-
         } catch (err) {
-            // 🔁 9. Refund + unlock
-
-            await User.findByIdAndUpdate(user._id,
-                {
-                    $inc: { credits: 5 },
-                    $set: { isGeneratingPdf: false },
-                    $push: {
-                        usageHistory: {
-                            type: "PDF Refund",
-                            creditsUsed: -5
-                        }
+            // refund
+            await User.findByIdAndUpdate(req.user.id, {
+                $inc: { credits: 5 },
+                $set: { isGeneratingPdf: false },
+                $push: {
+                    usageHistory: {
+                        type: "PDF Refund",
+                        creditsUsed: -5
                     }
-                },
-            );
+                }
+            });
 
-            throw err
+            // 🔥 Proper AI error detection
+            const aiCode = err?.error?.code || err?.response?.status;
+            const aiMessage = err?.error?.message || err?.message || "";
+
+            if (
+                aiCode === 503 ||
+                aiMessage.toLowerCase().includes("overloaded") ||
+                aiMessage.toLowerCase().includes("high demand")
+            ) {
+                return res.status(503).json({
+                    code: "AI_BUSY",
+                    message: "AI is under high load. Please try again in a few seconds."
+                });
+            }
+
+            return res.status(500).json({
+                code: "PDF_GENERATION_FAILED",
+                message: "Failed to generate PDF"
+            });
         }
 
+        // =========================
+        // 📤 RESPONSE
+        // =========================
+
+        res.set({
+            "Content-Type": "application/pdf",
+            "Content-Disposition": `attachment; filename=resume_${id}.pdf`
+        });
+
+        return res.send(pdfBuffer);
 
     } catch (error) {
         console.error("PDF Generation Error:", error);
 
-        if (
-            error?.error?.code === 503 ||
-            error?.error?.message?.includes("high demand")
-        ) {
-            return res.status(503).json({
-                message: "Server is busy. Please try again in a few seconds."
-            });
-        }
-
         return res.status(500).json({
-            message: "Something went wrong while generating PDF."
+            code: "SERVER_ERROR",
+            message: "Something went wrong while generating PDF"
         });
     }
 };
