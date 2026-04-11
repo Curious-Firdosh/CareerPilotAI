@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
         {
             type: {
                 type: String, // "resume_analysis", "pdf_generation"
-                enum: ["Resume Analysis", "PDF Generation", "Pdf Refund" , "Refund - Resume Analysis"],
+               
             },
             creditsUsed: Number,
             date: {

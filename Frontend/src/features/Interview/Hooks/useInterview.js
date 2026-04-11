@@ -51,7 +51,7 @@ export const useInterview = () => {
             setReport(data.InterviewReport)
         }
         catch (err) {
-            console.error(err)
+            toast.error("Failed to fetch interview report")
         }
         finally {
             setLoading(false)

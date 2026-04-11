@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react';
 import '../styles/interview.scss';
 import { useInterview } from '../Hooks/useInterview';
 import LoadingSpinner from '../Components/Spinner';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { PdfLoader } from '../Components/PdfLoader';
-import { useQueryClient } from "@tanstack/react-query";
-
 
 // Sub-component for individual questions
 const QuestionCard = ({ qId, question, intention, answer, isOpen, onToggle }) => {
@@ -55,8 +53,6 @@ const Interview = () => {
   const { id } = useParams()
   const { report, GetReportById, GenerateReportPdf } = useInterview();
   const [loadingPdf, setLoadingPdf] = useState(false);
-  const queryClient = useQueryClient();
-
 
   useEffect(() => {
     if (id) {
@@ -64,27 +60,19 @@ const Interview = () => {
     }
   }, [id]);
 
-
-
   const handleGeneratePdf = async (id) => {
     setLoadingPdf(true);
-
-    try {
-      await GenerateReportPdf(id);
-      // 🔥 THIS is the real fix
-      queryClient.invalidateQueries({ queryKey: ['getuserDetails'] });
-    } finally {
-      setLoadingPdf(false);
-    }
-  };
+    await GenerateReportPdf(id);
+    setLoadingPdf(false);
+  }
 
   if (loadingPdf) {
     return <main><PdfLoader /></main>
   }
 
-  if (!report) return <Navigate to="/generatereport" replace />;
-
-  if(report) return <LoadingSpinner isLoading={true}/>
+  if (!report) {
+    return <main><LoadingSpinner isLoading={true} /></main>;
+  }
 
   const getMatchStatus = (score) => {
     if (score >= 90) return { text: "HIRABLE. Actually smashing it.", class: "exceptional" };
@@ -127,8 +115,7 @@ const Interview = () => {
 
         <button className='generate-pdf-btn'
           disabled={loadingPdf}
-          onClick={() => report?._id && handleGeneratePdf(report._id)}
-        >
+          onClick={() => handleGeneratePdf(report._id)}>
           Generate PDF
         </button>
       </aside>
@@ -138,7 +125,7 @@ const Interview = () => {
         {/* Main */}
         <main className="main-content">
 
-
+      
 
           {/* Roadmap */}
           {activeTab === 'Road Map' ? (

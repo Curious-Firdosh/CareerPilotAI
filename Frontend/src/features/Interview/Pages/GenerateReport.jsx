@@ -55,7 +55,7 @@ const GenerateReport = () => {
         resume: resumeFile,
       });
 
-      navigate(`/interview/report/${report?._id}`);
+      navigate(`/interview/report/${report._id}`);
     } catch (error) {
       console.log(error);
       setIsGenerating(false);
@@ -81,139 +81,140 @@ const GenerateReport = () => {
     };
   }
 
-    if (loading && !isGenerating) {
-      return <LoadingSpinner />;
-    }
+  if (loading && !isGenerating) {
+    return <LoadingSpinner />;
+  }
 
-    if (isGenerating) {
-      return (
-        <div className="loader-container">
-          <Loader isComplete={false} />
-          <p className="loader-text">
-            Generating your personalized interview plan...
-          </p>
-        </div>
-      );
-    }
-
+  if (isGenerating) {
     return (
-      <div className="premium-generator-wrapper">
-
-        <NavBar/>
-        <main className="home-page">
-
-          {/* PAGE HEADER */}
-          <div className="page-header">
-            <h1>
-              Create Your Custom <span className="highlight">Interview Plan</span>
-            </h1>
-            <p>
-              Let our AI analyze the job requirements and your unique profile to
-              build a winning strategy.
-            </p>
-          </div>
-
-          {/* MAIN LAYOUT */}
-          <div className="interview-card">
-            <div className="interview-card__body">
-
-              {/* LEFT PANEL - JOB DESCRIPTION */}
-              <div className="panel panel--left">
-                <div className="panel__header">
-                  <Briefcase size={20} className="panel-icon" />
-                  <h2>Target Job Description</h2>
-                </div>
-                <p className="panel__hint">Paste the full job posting here. We'll extract the core requirements.</p>
-
-                <textarea
-                  className="panel__textarea"
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                  placeholder="e.g. 'Senior Frontend Engineer at Google requires proficiency in React, TypeScript, and large-scale system design...'"
-                  maxLength={5000}
-                />
-
-                <div className="char-counter">
-                  {jobDescription.length} / 5000 chars
-                </div>
-              </div>
-
-              {/* RIGHT PANEL - USER PROFILE */}
-              <div className="panel panel--right">
-
-                {/* UPLOAD RESUME SECTION */}
-                <div className="upload-section">
-                  <div className="panel__header">
-                    <FileText size={20} className="panel-icon" />
-                    <h2>Your Profile Context</h2>
-                  </div>
-
-                  <label className="dropzone">
-                    <input
-                      type="file"
-                      hidden
-                      ref={resumeInputRef}
-                      accept=".pdf,.doc,.docx"
-                      onChange={handleFileChange}
-                    />
-                    <div className="dropzone__icon"><UploadCloud size={32} /></div>
-                    <p className="dropzone__title">
-                      {resumeFile ? resumeFile.name : "Click to upload your resume"}
-                    </p>
-                    <p className="dropzone__subtitle">PDF or DOCX (Max 5MB)</p>
-                  </label>
-                </div>
-
-                <div className="or-divider">
-                  <span>OR</span>
-                </div>
-
-                {/* QUICK SELF-DESCRIPTION SECTION */}
-                <div className="description-section">
-                  <div className="panel__header">
-                    <Edit3 size={18} className="panel-icon" />
-                    <h2>Quick Self-Description</h2>
-                  </div>
-
-                  <textarea
-                    className="panel__textarea panel__textarea--small"
-                    placeholder="Briefly describe your current role, key skills, and years of experience..."
-                    value={selfDescription}
-                    onChange={(e) => setSelfDescription(e.target.value)}
-                    maxLength={2000}
-                  />
-                </div>
-
-                {/* INFO BOX */}
-                <div className="info-box">
-                  <Info size={16} className="info-box__icon" />
-                  <p>
-                    Provide a <strong>Resume</strong> OR a <strong>Self Description</strong> to generate a highly personalized plan.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* CARD FOOTER CTA */}
-            <div className="interview-card__footer">
-              <span className="footer-timing">
-                <Sparkles size={14} /> AI-Powered Analysis • Approx 30s
-              </span>
-              <button
-                onClick={handleGenerateReport}
-                className="generate-btn"
-                type="button"
-              >
-                <Sparkles size={18} /> Generate Strategy
-              </button>
-            </div>
-          </div>
-        </main>
-
-        <AllGeneratedReports />
+      <div className="loader-container">
+        <Loader isComplete={false} />
+        <p className="loader-text">
+          Generating your personalized interview plan...
+        </p>
       </div>
     );
+  }
+
+  return (
+    <div className="premium-generator-wrapper">
+
+      <NavBar />
+      <main className="home-page">
+
+
+        {/* PAGE HEADER */}
+        <div className="page-header">
+          <h1>
+            Create Your Custom <span className="highlight">Interview Plan</span>
+          </h1>
+          <p>
+            Let our AI analyze the job requirements and your unique profile to
+            build a winning strategy.
+          </p>
+        </div>
+
+        {/* MAIN LAYOUT */}
+        <div className="interview-card">
+          <div className="interview-card__body">
+
+            {/* LEFT PANEL - JOB DESCRIPTION */}
+            <div className="panel panel--left">
+              <div className="panel__header">
+                <Briefcase size={20} className="panel-icon" />
+                <h2>Target Job Description</h2>
+              </div>
+              <p className="panel__hint">Paste the full job posting here. We'll extract the core requirements.</p>
+
+              <textarea
+                className="panel__textarea"
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
+                placeholder="e.g. 'Senior Frontend Engineer at Google requires proficiency in React, TypeScript, and large-scale system design...'"
+                maxLength={5000}
+              />
+
+              <div className="char-counter">
+                {jobDescription.length} / 5000 chars
+              </div>
+            </div>
+
+            {/* RIGHT PANEL - USER PROFILE */}
+            <div className="panel panel--right">
+
+              {/* UPLOAD RESUME SECTION */}
+              <div className="upload-section">
+                <div className="panel__header">
+                  <FileText size={20} className="panel-icon" />
+                  <h2>Your Profile Context</h2>
+                </div>
+
+                <label className="dropzone">
+                  <input
+                    type="file"
+                    hidden
+                    ref={resumeInputRef}
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleFileChange}
+                  />
+                  <div className="dropzone__icon"><UploadCloud size={32} /></div>
+                  <p className="dropzone__title">
+                    {resumeFile ? resumeFile.name : "Click to upload your resume"}
+                  </p>
+                  <p className="dropzone__subtitle">PDF or DOCX (Max 5MB)</p>
+                </label>
+              </div>
+
+              <div className="or-divider">
+                <span>OR</span>
+              </div>
+
+              {/* QUICK SELF-DESCRIPTION SECTION */}
+              <div className="description-section">
+                <div className="panel__header">
+                  <Edit3 size={18} className="panel-icon" />
+                  <h2>Quick Self-Description</h2>
+                </div>
+
+                <textarea
+                  className="panel__textarea panel__textarea--small"
+                  placeholder="Briefly describe your current role, key skills, and years of experience..."
+                  value={selfDescription}
+                  onChange={(e) => setSelfDescription(e.target.value)}
+                  maxLength={2000}
+                />
+              </div>
+
+              {/* INFO BOX */}
+              <div className="info-box">
+                <Info size={16} className="info-box__icon" />
+                <p>
+                  Provide a <strong>Resume</strong> OR a <strong>Self Description</strong> to generate a highly personalized plan.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CARD FOOTER CTA */}
+          <div className="interview-card__footer">
+            <span className="footer-timing">
+              <Sparkles size={14} /> AI-Powered Analysis • Approx 30s
+            </span>
+            <button
+              onClick={handleGenerateReport}
+              className="generate-btn"
+              type="button"
+            >
+              <Sparkles size={18} /> Generate Strategy
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <AllGeneratedReports />
+    </div>
+  );
 };
 
 
-  export default GenerateReport;
+export default GenerateReport;

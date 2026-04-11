@@ -82,6 +82,11 @@ export const generateInterviewReport = async (req, res) => {
         user.credits -= 5;
         user.isGeneratingReport = true;
 
+        user.usageHistory.push({
+            type: "Report Analysis",
+            creditsUsed: 5,
+        })
+
         await user.save({ session });
 
         creditsDeducted = true;
@@ -117,7 +122,7 @@ export const generateInterviewReport = async (req, res) => {
             ...interviewReportByAi
         }], { session });
 
-         await User.findByIdAndUpdate(
+        await User.findByIdAndUpdate(
             req.user.id,
             { $set: { isGeneratingReport: false } },
             { session }
@@ -126,7 +131,7 @@ export const generateInterviewReport = async (req, res) => {
         await session.commitTransaction();
         session.endSession();
 
-        
+
 
         return res.status(201).json({
             code: "SUCCESS",
@@ -185,6 +190,7 @@ export const generateInterviewReport = async (req, res) => {
 export const GenerateResumePdfController = async (req, res) => {
 
     const session = await mongoose.startSession();
+    let creditsDeducted = false;
 
     try {
         const { id } = req.params;
@@ -194,7 +200,7 @@ export const GenerateResumePdfController = async (req, res) => {
             return res.status(400).json({ message: "Invalid ID" });
         }
 
-        // 2. Fetch report
+        // 2. Fetch report (FIXED)
         const interviewReport = await InterviewReportModel.findById({
             _id: id,
             user: req.user.id
@@ -219,12 +225,13 @@ export const GenerateResumePdfController = async (req, res) => {
         // =========================
         await session.startTransaction();
 
-        const user = await User.findOne({
-            _id: req.user.id
-        }).session(session);
+        const user = await User.findById(req.user.id).session(session);
+
+        console.log(user.isGeneratingPdf);
 
         if (user.isGeneratingPdf) {
             await session.abortTransaction();
+            session.endSession();
             return res.status(400).json({
                 code: "ALREADY_GENERATING",
                 message: "PDF is already being generated. Please wait."
@@ -233,6 +240,7 @@ export const GenerateResumePdfController = async (req, res) => {
 
         if (user.credits < 5) {
             await session.abortTransaction();
+            session.endSession();
             return res.status(400).json({
                 code: "INSUFFICIENT_CREDITS",
                 message: "You don’t have enough credits."
@@ -246,6 +254,7 @@ export const GenerateResumePdfController = async (req, res) => {
             type: "PDF Generation",
             creditsUsed: 5
         });
+        creditsDeducted = true
 
         await user.save({ session });
 
@@ -275,19 +284,21 @@ export const GenerateResumePdfController = async (req, res) => {
             });
 
         } catch (err) {
-            // refund
-            await User.findByIdAndUpdate(req.user.id, {
-                $inc: { credits: 5 },
-                $set: { isGeneratingPdf: false },
-                $push: {
-                    usageHistory: {
-                        type: "PDF Refund",
-                        creditsUsed: -5
-                    }
-                }
-            });
 
-            // 🔥 Proper AI error detection
+            if (creditsDeducted) {
+                // refund + unlock
+                await User.findByIdAndUpdate(req.user.id, {
+                    $inc: { credits: 5 },
+                    $set: { isGeneratingPdf: false },
+                    $push: {
+                        usageHistory: {
+                            type: "PDF Refund",
+                            creditsUsed: -5
+                        }
+                    }
+                });
+            }
+
             const aiCode = err?.error?.code || err?.response?.status;
             const aiMessage = err?.error?.message || err?.message || "";
 
@@ -321,6 +332,11 @@ export const GenerateResumePdfController = async (req, res) => {
 
     } catch (error) {
         console.error("PDF Generation Error:", error);
+
+        // 🔥 IMPORTANT FIX (unlock if something breaks early)
+        await User.findByIdAndUpdate(req.user.id, {
+            $set: { isGeneratingPdf: false }
+        });
 
         return res.status(500).json({
             code: "SERVER_ERROR",
