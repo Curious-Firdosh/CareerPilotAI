@@ -55,9 +55,10 @@ export const registerUser = async (req, res) => {
 
     // send cookie securely
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "strict"
+      httpOnly: true, //@ Protects against XSS attacks
+      secure: true, //! for loacl use   secure: false,
+      sameSite: "none",  //@ Always send cookie (even cross-origin)
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
     });
 
     console.log('User Created SuccessFully');

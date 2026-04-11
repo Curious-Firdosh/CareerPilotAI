@@ -29,7 +29,6 @@ export const useInterview = () => {
         try {
             data = await InterviewApi.generateReport({ jobDescription, selfDescription, resume })
             setReport(data.interviewReport)
-            console.log(data);
             
             toast.success(data.message || "Interview report generated successfully")
         }
