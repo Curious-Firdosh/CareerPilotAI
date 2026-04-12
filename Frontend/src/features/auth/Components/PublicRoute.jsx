@@ -2,6 +2,8 @@
 import { useGetme } from "../Hooks/useAuth"
 import LoadingSpinner from "../../Interview/Components/Spinner";
 import { Navigate } from "react-router-dom";
+import PremiumLoader from "./PremiumLoader";
+
 
 
 const PublicRoute = ({ children }) => {
@@ -10,7 +12,7 @@ const PublicRoute = ({ children }) => {
     if (isPending) {
         return (
             <div className="main">
-                <LoadingSpinner isLoading={true} />
+                <PremiumLoader/>
             </div>
         )
     }

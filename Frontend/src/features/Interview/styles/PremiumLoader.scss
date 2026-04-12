@@ -1,0 +1,104 @@
+$accent: #ff2d78; // AI Pink Theme
+$bg-dark: #0a0a0a;
+$glass-bg: rgba(255, 255, 255, 0.03);
+$glass-border: rgba(255, 255, 255, 0.08);
+
+.premium-loader-container {
+  /* --- CHANGED TO FIXED FULL SCREEN OVERLAY --- */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999; // Ensures it sits on top of everything else
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $bg-dark;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  .glass-card {
+    position: relative;
+    padding: 2.5rem 2rem;
+    width: 320px;
+    text-align: center;
+    background: $glass-bg;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid $glass-border;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+
+    /* Subtle rotating background glow using the accent color */
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba($accent, 0.15) 0%, transparent 60%);
+      animation: rotateGlow 8s linear infinite;
+      z-index: 0;
+    }
+
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Custom AI-themed spinner */
+    .spinner {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 1.5rem;
+      border: 3px solid transparent;
+      border-top-color: $accent;
+      border-right-color: rgba($accent, 0.4);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    /* Fixed height prevents the card from jumping when text changes */
+    .message-container {
+      height: 24px; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden; // Prevents text bleeding during the slide animation
+      
+      .animated-text {
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #e5e5e5;
+        letter-spacing: 0.05em;
+        transition: all 0.3s ease-in-out;
+      }
+
+      /* Pure CSS animation classes */
+      .fade-in {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .fade-out {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotateGlow {
+  to { transform: rotate(360deg); }
+}

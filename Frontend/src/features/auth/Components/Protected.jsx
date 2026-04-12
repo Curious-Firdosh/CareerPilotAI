@@ -2,7 +2,8 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 
 import { useGetme } from "../Hooks/useAuth";
-import LoadingSpinner from "../../Interview/Components/Spinner";
+import PremiumLoader from "./PremiumLoader";
+
 
 
 const Protected = ({ children }) => {
@@ -11,7 +12,7 @@ const Protected = ({ children }) => {
   if (isPending) {
     return (
       <div className="main">
-          <LoadingSpinner isLoading={true}/>
+          <PremiumLoader/>
       </div>
     )
   }
