@@ -278,6 +278,8 @@ export const GenerateResumePdfController = async (req, res) => {
                 throw new Error("PDF generation failed");
             }
 
+            console.log("Helllo Pdf is Generated Successfulyy");
+            
             // unlock
             await User.findByIdAndUpdate(req.user.id, {
                 $set: { isGeneratingPdf: false }
@@ -313,10 +315,14 @@ export const GenerateResumePdfController = async (req, res) => {
                 });
             }
 
+            console.log(err);
             return res.status(500).json({
                 code: "PDF_GENERATION_FAILED",
                 message: "Failed to generate PDF"
             });
+
+            
+            
         }
 
         // =========================
