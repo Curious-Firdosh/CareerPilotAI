@@ -1,0 +1,141 @@
+// Reuse the variables established for the project to ensure brand consistency
+$bg-dark: #0f0f13;
+$card-border: rgba(255, 255, 255, 0.08);
+$text-main: #ffffff;
+$text-muted: #a0a0ab;
+$accent-pink:#f1216a;
+$accent-pink-glow: rgba(255, 0, 127, 0.2);
+$gradient-pink: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+
+.not-found-section {
+  background-color: $bg-dark;
+  min-height: 100vh; // Take up full screen height
+  display: flex;
+  justify-content: center; // Vertically center content
+  align-items: center; // Horizontally center content
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: $text-main;
+  padding: 2rem;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.not-found-content {
+  max-width: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem; // Tight spacing to fit in one screen
+}
+
+.not-found-illustration {
+  width: 100%;
+  max-width: 450px; // Shrunk slightly for better presentation
+  position: relative;
+  
+  img {
+    width: 100%;
+    height: auto;
+    // Apply a subtle glow to the entire image container
+    filter: drop-shadow(0 0 10px rgba($accent-pink, 0.3));
+    transition: filter 0.3s ease;
+  }
+
+  &:hover img {
+     filter: drop-shadow(0 0 15px rgba($accent-pink, 0.5));
+  }
+}
+
+// Minimal attribution footer as requested for Freepik usage
+.attribution {
+  font-size: 0.7rem;
+  color: rgba($text-muted, 0.5);
+  margin-top: -0.5rem; // Pull slightly closer to image
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: rgba($text-main, 0.8);
+    }
+  }
+}
+
+.not-found-text-block {
+  h2 {
+    font-size: 3rem; // Large headline to make an impact
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+    background: $gradient-pink;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $text-main;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: $text-muted;
+    line-height: 1.5;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+// Style matching the premium "Popular Plan" button
+.go-home-button {
+  display: inline-block;
+  text-decoration: none;
+  background: $gradient-pink;
+  color: white;
+  padding: 1rem 2.5rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(255, 8, 68, 0.3);
+
+  &:hover {
+    box-shadow: 0 12px 25px rgba(255, 8, 68, 0.5);
+    transform: translateY(-2px);
+  }
+}
+
+// Responsive Media Queries
+@media (max-width: 768px) {
+  .not-found-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .not-found-illustration {
+    max-width: 380px;
+  }
+
+  .not-found-text-block {
+    h2 {
+      font-size: 2.5rem;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+    }
+    
+    p {
+      font-size: 0.85rem;
+    }
+  }
+
+  .go-home-button {
+    padding: 0.85rem 2rem;
+    font-size: 0.95rem;
+  }
+}
