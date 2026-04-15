@@ -1,19 +1,18 @@
 //! in the interview i am not going to use Tanstack Query .. i Will do it with context api
-
-
 import { toast } from "sonner"
 import { InterviewApi } from "../Services/interview.api"
 
-import { useContext} from "react"
+import { useContext } from "react"
 import { InterviewContext } from "../Interview.context"
+import { useQueryClient } from "@tanstack/react-query"
 
 
 
 export const useInterview = () => {
 
     const context = useContext(InterviewContext)
+    const queryClient = useQueryClient(); // 2. Initialize it
 
-    
 
     if (!context) {
         throw new Error("useInterview must be used within an InterviewProvider")
@@ -29,7 +28,8 @@ export const useInterview = () => {
         try {
             data = await InterviewApi.generateReport({ jobDescription, selfDescription, resume })
             setReport(data.interviewReport)
-            
+            // 3. FORCE REACT QUERY TO REFETCH USER DATA
+            await queryClient.invalidateQueries(['getuserDetails']);
             toast.success(data.message || "Interview report generated successfully")
         }
         catch (err) {
@@ -76,20 +76,20 @@ export const useInterview = () => {
 
 
     const GenerateReportPdf = async (id) => {
-        setLoading(true) 
+        setLoading(true)
         let data = null;
 
         try {
             data = await InterviewApi.generateReportPdf(id)
             const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
-            
+
             const link = document.createElement('a');
             link.href = url;
             link.download = `Resume-${id}.pdf`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        }catch (err) {
+        } catch (err) {
             toast.error(err?.response?.data?.message || err.message || "Failed to generate PDF")
         }
         finally {

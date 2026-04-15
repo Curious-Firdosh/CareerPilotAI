@@ -6,6 +6,7 @@ import Protected from "./features/auth/Components/Protected";
 import PublicRoute from "./features/auth/Components/PublicRoute";
 import Interview from "./features/Interview/Pages/Interview";
 import GenerateReport from "./features/Interview/Pages/GenerateReport";
+import PricingCards from "./features/Interview/Pages/PricingCards";
 
 export const router = createBrowserRouter([
     {
@@ -50,5 +51,15 @@ export const router = createBrowserRouter([
             </Protected>
 
         )
+    },
+     {
+        path: "/upgrade",
+        element: (
+            <Protected>
+                <PricingCards/>
+            </Protected>
+
+        )
     }
 ]);
+

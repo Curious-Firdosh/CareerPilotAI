@@ -1,0 +1,227 @@
+// Variables
+$bg-dark: #0f0f13;
+$card-bg: rgba(255, 255, 255, 0.03);
+$card-border: rgba(255, 255, 255, 0.08);
+$text-main: #ffffff;
+$text-muted: #a0a0ab;
+$accent-pink: #ff007f;
+$accent-pink-glow: rgba(255, 0, 127, 0.2);
+$gradient-pink: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+
+.pricing-section {
+  background-color: $bg-dark;
+  min-height: 100vh;
+  padding: 2rem; // Reduced outer padding
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: $text-main;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; // Added this to center everything vertically on the screen
+  box-sizing: border-box;
+}
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 2.5rem; // Reduced from 4rem
+
+  h2 {
+    font-size: 2.2rem; // Slightly smaller
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: $gradient-pink;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  p {
+    color: $text-muted;
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+.pricing-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.5rem; // Reduced gap between cards
+  width: 100%;
+  max-width: 1100px;
+  flex-wrap: wrap; 
+}
+
+.pricing-card {
+  background: $card-bg;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid $card-border;
+  border-radius: 20px; // Slightly smaller border radius
+  padding: 2rem; // Reduced from 2.5rem
+  width: 100%;
+  max-width: 320px; // Shrunk card width slightly
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  &:hover {
+    transform: translateY(-8px);
+    border-color: rgba($accent-pink, 0.4);
+    box-shadow: 0 15px 35px $accent-pink-glow;
+  }
+
+  &.popular {
+    border-color: rgba($accent-pink, 0.6);
+    background: rgba(255, 0, 127, 0.05);
+    transform: scale(1.03); // Reduced scale out effect so it doesn't break layout
+
+    &:hover {
+      transform: scale(1.03) translateY(-8px);
+    }
+
+    .cta-button {
+      background: $gradient-pink;
+      color: white;
+      border: none;
+      box-shadow: 0 8px 20px rgba(255, 8, 68, 0.3);
+
+      &:hover {
+        box-shadow: 0 12px 25px rgba(255, 8, 68, 0.5);
+      }
+    }
+  }
+
+  .badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: $gradient-pink;
+    color: white;
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(255, 8, 68, 0.4);
+  }
+
+  .card-header {
+    border-bottom: 1px solid $card-border;
+    padding-bottom: 1rem; // Reduced
+    margin-bottom: 1rem; // Reduced
+    text-align: center;
+
+    .tier-name {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: $text-muted;
+      margin-bottom: 0.75rem;
+    }
+
+    .price {
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      margin-bottom: 0.25rem;
+
+      .currency {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .amount {
+        font-size: 2.8rem; // Slightly smaller text
+        font-weight: 700;
+      }
+    }
+
+    .credits-highlight {
+      font-size: 1rem;
+      font-weight: 600;
+      color: $accent-pink;
+      margin-bottom: 0.5rem;
+    }
+
+    .description {
+      font-size: 0.85rem;
+      color: $text-muted;
+      line-height: 1.4;
+    }
+  }
+
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+
+    li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem; // Reduced spacing
+      font-size: 0.85rem; // Slightly smaller text
+      color: #e0e0e0;
+
+      svg {
+        width: 16px; // Shrunk icon
+        height: 16px; // Shrunk icon
+        color: $accent-pink;
+        margin-right: 10px;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .cta-button {
+    margin-top: 1.5rem; // Reduced margin
+    width: 100%;
+    padding: 0.85rem; // Reduced padding
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    color: $accent-pink;
+    border: 2px solid $accent-pink;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 0, 127, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Responsive Media Queries
+@media (max-width: 1024px) {
+  .pricing-section {
+    height: auto; // Allow scrolling on smaller screens
+    justify-content: flex-start; 
+    padding: 4rem 2rem;
+  }
+  
+  .pricing-card {
+    &.popular {
+      transform: scale(1);
+      
+      &:hover {
+        transform: translateY(-8px);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .pricing-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pricing-card {
+    max-width: 100%; 
+  }
+}
