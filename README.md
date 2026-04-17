@@ -122,23 +122,23 @@ Instead of generic resume feedback, it provides:
 
 ### 🔹Register
 
-![Register User ](./public/screenshots/register.png)
+![Register User ](./Frontend/public/screenshots/register.png)
 
 ### 🔹 Home Page
 
-![Home Page](./public/screenshots/home.png)
+![Home Page](./Frontend/public/screenshots/home.png)
 
 ### 🔹 Dashboard
 
-![Dashboard](./public/screenshots/dashboard.png)
+![Dashboard](./Frontend/public/screenshots/dashboard.png)
 
 ### 🔹 Resume Analysis
 
-![Analysis](./public/screenshots/report.png)
+![Analysis](./Frontend/public/screenshots/report.png)
 
 ### 🔹Pricing
 
-![Pricing](./public/screenshots/pricing.png)
+![Pricing](./Frontend/public/screenshots/pricing.png)
 
 ---
 
